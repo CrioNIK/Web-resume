@@ -38,9 +38,9 @@ function EnergyRings() {
 			<mesh ref={ringARef}>
 				<torusGeometry args={[1.45, 0.02, 18, 128]} />
 				<meshStandardMaterial
-					color="#7deefe"
-					emissive="#12333f"
-					emissiveIntensity={1.6}
+					color="#ff5f73"
+					emissive="#42111b"
+					emissiveIntensity={1.9}
 					metalness={0.9}
 					roughness={0.24}
 				/>
@@ -48,9 +48,9 @@ function EnergyRings() {
 			<mesh ref={ringBRef} rotation={[Math.PI / 2.8, 0.35, 0]}>
 				<torusGeometry args={[1.85, 0.015, 16, 128]} />
 				<meshStandardMaterial
-					color="#c8ff7d"
-					emissive="#3a4611"
-					emissiveIntensity={1.2}
+					color="#ff7f90"
+					emissive="#2f0d17"
+					emissiveIntensity={1.35}
 					metalness={0.85}
 					roughness={0.3}
 				/>
@@ -70,9 +70,9 @@ function Artifact() {
 			if ((node as THREE.Mesh).isMesh) {
 				const mesh = node as THREE.Mesh;
 				mesh.material = new THREE.MeshStandardMaterial({
-					color: '#9cefff',
-					emissive: '#0d1f2b',
-					emissiveIntensity: 1,
+					color: '#ff8f9f',
+					emissive: '#330a13',
+					emissiveIntensity: 1.2,
 					metalness: 0.65,
 					roughness: 0.24
 				});
@@ -121,12 +121,12 @@ export default function HeroScene() {
 				gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
 			>
 				<ambientLight intensity={0.5} />
-				<directionalLight position={[3, 4, 3]} intensity={1.5} color="#9af2ff" />
-				<pointLight position={[-3, -2, 2]} intensity={0.9} color="#ffad6e" />
+				<directionalLight position={[3, 4, 3]} intensity={1.5} color="#ff5f75" />
+				<pointLight position={[-3, -2, 2]} intensity={0.9} color="#ff344f" />
 				<Suspense fallback={<SceneLoader />}>
 					<Artifact />
 					<EnergyRings />
-					<Sparkles count={75} size={2.5} scale={[4.6, 3.8, 1.5]} speed={0.35} color="#7fd7ff" />
+					<Sparkles count={75} size={2.5} scale={[4.6, 3.8, 1.5]} speed={0.35} color="#ff4f69" />
 				</Suspense>
 			</Canvas>
 		</div>

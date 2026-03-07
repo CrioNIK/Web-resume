@@ -48,7 +48,7 @@ const personSchema = {
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="theme-color" content="#04070e" />
+		<meta name="theme-color" content="#15070c" />
 		<link rel="canonical" href={pageUrl} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
@@ -65,7 +65,7 @@ const personSchema = {
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Unbounded:wght@400;600;700;800&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&family=Russo+One&display=swap"
 			rel="stylesheet"
 		/>
 
@@ -74,6 +74,8 @@ const personSchema = {
 	</head>
 	<body>
 		<div class="grain-overlay" aria-hidden="true"></div>
+		<div class="scanline-overlay" aria-hidden="true"></div>
+		<div class="vignette-overlay" aria-hidden="true"></div>
 		<slot />
 	</body>
 </html>
