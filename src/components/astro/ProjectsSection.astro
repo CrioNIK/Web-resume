@@ -1,0 +1,22 @@
+---
+import ProjectsShowcase from '../react/ProjectsShowcase';
+import type { ProjectCardData } from '../react/ProjectCard';
+
+interface Props {
+	projects: ProjectCardData[];
+}
+
+const { projects } = Astro.props;
+---
+
+<section class="section-shell" id="projects">
+	<div class="section-heading">
+		<p class="section-eyebrow">Projects</p>
+		<h2>Шоукейс рішень: продуктивність + UX-інтерактив</h2>
+		<p class="section-note">
+			React-остріви підвантажуються тільки коли секція входить у viewport (`client:visible`), щоб
+			не перевантажувати стартовий рендер.
+		</p>
+	</div>
+	<ProjectsShowcase client:visible projects={projects} />
+</section>

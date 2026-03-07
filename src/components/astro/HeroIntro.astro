@@ -1,0 +1,33 @@
+---
+const quickFacts = [
+	{ label: 'Локація', value: 'Київ, Україна' },
+	{ label: 'Формат роботи', value: 'Віддалено / Офіс / Гібрид' },
+	{ label: 'Фокус', value: 'React, Next.js, TypeScript, Performance' }
+];
+---
+
+<div class="hero-copy">
+	<p class="eyebrow">Middle Frontend Developer (React / Next.js)</p>
+	<h1>Батурін Микита</h1>
+	<p class="hero-summary">
+		Frontend розробник, який створює складні веб-застосунки з акцентом на швидкодію, плавну
+		взаємодію та архітектуру, що масштабується. Закриваю цикл від дизайну системи до релізу на
+		production.
+	</p>
+	<div class="hero-actions">
+		<a class="button button--primary" href="mailto:coldboycrio314@gmail.com">Написати на email</a>
+		<a class="button button--ghost" href="https://www.dnd-codex.guide/" target="_blank" rel="noreferrer">
+			Відкрити DND Codex
+		</a>
+	</div>
+	<ul class="fact-grid">
+		{
+			quickFacts.map((fact) => (
+				<li class="fact-grid__item">
+					<p>{fact.label}</p>
+					<strong>{fact.value}</strong>
+				</li>
+			))
+		}
+	</ul>
+</div>

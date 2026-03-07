@@ -1,0 +1,27 @@
+---
+const navItems = [
+	{ label: 'Навички', href: '#skills' },
+	{ label: 'Досвід', href: '#experience' },
+	{ label: 'Проєкти', href: '#projects' },
+	{ label: 'Про мене', href: '#about' },
+	{ label: 'Контакти', href: '#contacts' }
+];
+---
+
+<header class="top-nav">
+	<a href="#top" class="brand-mark">
+		<span class="brand-mark__id">MB</span>
+		<span class="brand-mark__meta">Frontend Engineer</span>
+	</a>
+	<nav aria-label="Головна навігація">
+		<ul class="top-nav__list">
+			{
+				navItems.map((item) => (
+					<li>
+						<a href={item.href}>{item.label}</a>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
+</header>

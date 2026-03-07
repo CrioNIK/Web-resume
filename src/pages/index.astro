@@ -1,11 +1,32 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import AboutMe from '../components/astro/AboutMe.astro';
+import ContactPanel from '../components/astro/ContactPanel.astro';
+import ExperienceTimeline from '../components/astro/ExperienceTimeline.astro';
+import HeroSection from '../components/astro/HeroSection.astro';
+import ProjectsSection from '../components/astro/ProjectsSection.astro';
+import SkillMatrix from '../components/astro/SkillMatrix.astro';
+import TopNav from '../components/astro/TopNav.astro';
+import type { ProjectCardData } from '../components/react/ProjectCard';
+import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const projectEntries = await getCollection('projects');
+const projects: ProjectCardData[] = projectEntries
+	.sort((a, b) => a.data.order - b.data.order)
+	.map((entry) => ({
+		slug: entry.slug,
+		...entry.data
+	}));
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout>
+	<main id="top">
+		<TopNav />
+		<HeroSection />
+		<SkillMatrix />
+		<ExperienceTimeline />
+		<ProjectsSection projects={projects} />
+		<AboutMe />
+		<ContactPanel />
+	</main>
+</BaseLayout>

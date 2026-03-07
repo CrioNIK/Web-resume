@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+	canonical?: string;
+}
+
+const {
+	title = 'Батурін Микита - Middle Frontend Developer (React / Next.js)',
+	description = 'Інтерактивне веб-резюме Middle Frontend Developer з акцентом на React, Next.js, TypeScript, PWA, SSR та UX-анімації.',
+	canonical
+} = Astro.props;
+
+const pageUrl = canonical ?? Astro.url?.href ?? 'https://www.dnd-codex.guide/';
+
+const personSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: 'Батурін Микита',
+	jobTitle: 'Middle Frontend Developer (React / Next.js)',
+	email: 'mailto:coldboycrio314@gmail.com',
+	telephone: '+380953147381',
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: 'Kyiv',
+		addressCountry: 'UA'
+	},
+	sameAs: ['https://www.dnd-codex.guide/'],
+	knowsAbout: [
+		'React',
+		'Next.js',
+		'TypeScript',
+		'TanStack Query',
+		'Tailwind CSS',
+		'Framer Motion',
+		'PWA',
+		'SSR'
+	]
+};
+---
+
+<!doctype html>
+<html lang="uk">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#04070e" />
+		<link rel="canonical" href={pageUrl} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="uk_UA" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Unbounded:wght@400;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+
+		<title>{title}</title>
+		<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+	</head>
+	<body>
+		<div class="grain-overlay" aria-hidden="true"></div>
+		<slot />
+	</body>
+</html>

@@ -1,0 +1,11 @@
+---
+import HeroIntro from './HeroIntro.astro';
+import HeroScene from '../react/HeroScene';
+---
+
+<section class="hero-shell section-shell" id="hero">
+	<HeroIntro />
+	<div class="hero-visual panel">
+		<HeroScene client:only="react" />
+	</div>
+</section>
