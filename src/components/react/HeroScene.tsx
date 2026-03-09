@@ -1,5 +1,5 @@
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Html, Sparkles, useGLTF } from '@react-three/drei';
+import { ContactShadows, Float, Html, Sparkles, useGLTF } from '@react-three/drei';
 import { Suspense, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
@@ -69,13 +69,27 @@ function Artifact() {
 		cloned.traverse((node) => {
 			if ((node as THREE.Mesh).isMesh) {
 				const mesh = node as THREE.Mesh;
-				mesh.material = new THREE.MeshStandardMaterial({
-					color: '#ff8f9f',
-					emissive: '#330a13',
-					emissiveIntensity: 1.2,
-					metalness: 0.65,
-					roughness: 0.24
-				});
+				const baseMaterial = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+				const nextMaterial = baseMaterial?.clone();
+
+				if (nextMaterial && 'color' in nextMaterial) {
+					nextMaterial.color = new THREE.Color('#f2d4c7');
+				}
+
+				if (nextMaterial && 'emissive' in nextMaterial) {
+					nextMaterial.emissive = new THREE.Color('#24070f');
+					nextMaterial.emissiveIntensity = 0.35;
+				}
+
+				if (nextMaterial && 'metalness' in nextMaterial) {
+					nextMaterial.metalness = 0.08;
+				}
+
+				if (nextMaterial && 'roughness' in nextMaterial) {
+					nextMaterial.roughness = 0.82;
+				}
+
+				mesh.material = nextMaterial ?? mesh.material;
 				mesh.castShadow = true;
 				mesh.receiveShadow = true;
 			}
@@ -93,19 +107,19 @@ function Artifact() {
 
 		artifactRef.current.rotation.y = THREE.MathUtils.lerp(
 			artifactRef.current.rotation.y,
-			pointer.x * 0.6 + t * 0.3,
+			0.32 + pointer.x * 0.45 + Math.sin(t * 0.55) * 0.1,
 			0.07
 		);
 		artifactRef.current.rotation.x = THREE.MathUtils.lerp(
 			artifactRef.current.rotation.x,
-			-pointer.y * 0.35 + Math.sin(t * 0.6) * 0.05,
+			0.08 - pointer.y * 0.24 + Math.sin(t * 0.6) * 0.035,
 			0.07
 		);
 	});
 
 	return (
 		<Float speed={1.3} rotationIntensity={0.4} floatIntensity={0.6}>
-			<group ref={artifactRef} scale={1.3}>
+			<group ref={artifactRef} position={[0, -1.08, 0]} scale={2.75}>
 				<primitive object={enhancedModel} />
 			</group>
 		</Float>
@@ -116,17 +130,34 @@ export default function HeroScene() {
 	return (
 		<div className="hero-canvas-shell" aria-hidden="true">
 			<Canvas
-				camera={{ position: [0, 0, 4.6], fov: 42 }}
+				camera={{ position: [0, 0.12, 4.15], fov: 38 }}
 				dpr={[1, 1.8]}
 				gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+				shadows
 			>
-				<ambientLight intensity={0.5} />
-				<directionalLight position={[3, 4, 3]} intensity={1.5} color="#ff5f75" />
-				<pointLight position={[-3, -2, 2]} intensity={0.9} color="#ff344f" />
+				<ambientLight intensity={0.38} />
+				<directionalLight position={[2.8, 4.2, 2.8]} intensity={1.9} color="#ff6d80" castShadow />
+				<pointLight position={[-2.4, 1.6, 2.6]} intensity={1.1} color="#4de6ff" />
+				<pointLight position={[-3, -2, 2]} intensity={0.75} color="#ff344f" />
+				<spotLight
+					position={[0, 3.8, 3.2]}
+					intensity={1.2}
+					angle={0.42}
+					penumbra={0.8}
+					color="#ffd3bf"
+				/>
 				<Suspense fallback={<SceneLoader />}>
 					<Artifact />
 					<EnergyRings />
 					<Sparkles count={75} size={2.5} scale={[4.6, 3.8, 1.5]} speed={0.35} color="#ff4f69" />
+					<ContactShadows
+						position={[0, -1.15, 0]}
+						opacity={0.5}
+						scale={5.5}
+						blur={2.4}
+						far={3}
+						color="#4a0f18"
+					/>
 				</Suspense>
 			</Canvas>
 		</div>
