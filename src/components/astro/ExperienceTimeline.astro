@@ -1,40 +1,21 @@
----
-const jobs = [
-	{
-		role: 'Frontend Developer',
-		company: 'Власні проєкти / Pet Projects',
-		period: '2025 - Теперішній час',
-		location: 'Україна',
-		points: [
-			'Спроєктував і розробив масштабований PWA-довідник для D&D на React 19 + TypeScript.',
-			'Підняв SSR-пайплайн на Vite для швидшого стартового рендеру та кращого SEO.',
-			'Оптимізував кешування через патерн stale-while-revalidate у TanStack Query.',
-			'Реалізував систему анімацій на Framer Motion з кастомними spring-параметрами.'
-		]
-	},
-	{
-		role: 'Unity Developer',
-		company: 'AGORA software',
-		period: '2019 - 2022',
-		location: 'Україна',
-		points: [
-			'Розробляв і підтримував інтерактивні застосунки на Unity.',
-			'Писав ігрову та бізнес-логіку на C#.',
-			'Працював над оптимізацією продуктивності та 3D/2D asset pipeline.',
-			'Взаємодіяв із командою по розробці та інтеграції нового функціоналу.'
-		]
-	}
-];
+﻿---
+import type { SiteCopy } from '../../i18n/siteCopy';
+
+interface Props {
+	experience: SiteCopy['experience'];
+}
+
+const { experience } = Astro.props;
 ---
 
 <section class="section-shell" id="experience">
 	<div class="section-heading">
-		<p class="section-eyebrow">Experience</p>
-		<h2>Досвід, який підтверджує інженерну глибину</h2>
+		<p class="section-eyebrow">{experience.eyebrow}</p>
+		<h2>{experience.title}</h2>
 	</div>
 	<div class="timeline">
 		{
-			jobs.map((job) => (
+			experience.jobs.map((job) => (
 				<article class="panel timeline-item">
 					<header>
 						<h3>{job.role}</h3>

@@ -400,6 +400,14 @@ a {
 	box-shadow: 0 0 35px rgba(255, 47, 84, 0.25);
 }
 
+.top-nav__cluster {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.85rem;
+	flex-wrap: wrap;
+}
+
 .brand-mark {
 	display: inline-flex;
 	align-items: center;
@@ -437,7 +445,8 @@ a {
 	padding: 0;
 }
 
-.top-nav__list a {
+.top-nav__list a,
+.lang-switch__link {
 	position: relative;
 	display: inline-flex;
 	align-items: center;
@@ -455,7 +464,9 @@ a {
 }
 
 .top-nav__list a:hover,
-.top-nav__list a:focus-visible {
+.top-nav__list a:focus-visible,
+.lang-switch__link:hover,
+.lang-switch__link:focus-visible {
 	color: var(--text-main);
 	border-color: var(--border-strong);
 	background: rgba(255, 54, 80, 0.1);
@@ -464,6 +475,7 @@ a {
 }
 
 .top-nav__list a::before,
+.lang-switch__link::before,
 .button::before,
 .text-link::before {
 	content: '';
@@ -477,11 +489,48 @@ a {
 
 .top-nav__list a:hover::before,
 .top-nav__list a:focus-visible::before,
+.lang-switch__link:hover::before,
+.lang-switch__link:focus-visible::before,
 .button:hover::before,
 .button:focus-visible::before,
 .text-link:hover::before,
 .text-link:focus-visible::before {
 	animation: hud-panel-sweep 0.66s ease-out 1;
+}
+
+.lang-switch {
+	display: flex;
+	align-items: center;
+	gap: 0.55rem;
+	padding-left: 0.8rem;
+	border-left: 1px solid rgba(255, 83, 105, 0.28);
+}
+
+.lang-switch__label {
+	font-size: 0.67rem;
+	font-weight: 700;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--text-dim);
+}
+
+.lang-switch__list {
+	display: flex;
+	gap: 0.3rem;
+}
+
+.lang-switch__link {
+	min-width: 2.7rem;
+	justify-content: center;
+	padding-inline: 0.52rem;
+}
+
+.lang-switch__link.is-active,
+.lang-switch__link[aria-current='page'] {
+	color: var(--accent-blue);
+	border-color: color-mix(in srgb, var(--accent-blue) 70%, transparent);
+	background: rgba(77, 230, 255, 0.1);
+	box-shadow: 0 0 16px rgba(77, 230, 255, 0.16);
 }
 
 .hero-shell {
@@ -929,6 +978,11 @@ button.button {
 		clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
 	}
 
+	.top-nav__cluster {
+		width: 100%;
+		justify-content: space-between;
+	}
+
 	.hero-shell {
 		grid-template-columns: 1fr;
 	}
@@ -956,6 +1010,21 @@ button.button {
 
 	.top-nav__list {
 		flex-wrap: wrap;
+	}
+
+	.top-nav__cluster {
+		width: 100%;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.lang-switch {
+		width: 100%;
+		justify-content: space-between;
+		padding-left: 0;
+		padding-top: 0.45rem;
+		border-left: none;
+		border-top: 1px solid rgba(255, 83, 105, 0.22);
 	}
 
 	.fact-grid,

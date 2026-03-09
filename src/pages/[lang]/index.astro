@@ -1,0 +1,83 @@
+﻿---
+import { getCollection } from 'astro:content';
+import AboutMe from '../../components/astro/AboutMe.astro';
+import ContactPanel from '../../components/astro/ContactPanel.astro';
+import ExperienceTimeline from '../../components/astro/ExperienceTimeline.astro';
+import HeroSection from '../../components/astro/HeroSection.astro';
+import ProjectsSection from '../../components/astro/ProjectsSection.astro';
+import SkillMatrix from '../../components/astro/SkillMatrix.astro';
+import TopNav from '../../components/astro/TopNav.astro';
+import type { ProjectCardData } from '../../components/react/ProjectCard';
+import { isLang, languages, siteCopy, type Lang } from '../../i18n/siteCopy';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+	return languages.map((lang) => ({ params: { lang } }));
+}
+
+function pickLocalizedValue(value: string | { uk: string; en: string }, lang: Lang) {
+	if (typeof value === 'string') {
+		return value;
+	}
+
+	return value[lang] ?? value.en ?? value.uk;
+}
+
+function pickLocalizedList(value: string[] | { uk: string[]; en: string[] }, lang: Lang) {
+	if (Array.isArray(value)) {
+		return value;
+	}
+
+	return value[lang] ?? value.en ?? value.uk;
+}
+
+const requestedLang = Astro.params.lang ?? 'en';
+
+if (!isLang(requestedLang)) {
+	throw new Error(`Unsupported language route: ${requestedLang}`);
+}
+
+const lang: Lang = requestedLang;
+const copy = siteCopy[lang];
+const projectEntries = await getCollection('projects');
+const origin = Astro.site ?? Astro.url;
+
+const projects: ProjectCardData[] = projectEntries
+	.sort((a, b) => a.data.order - b.data.order)
+	.map((entry) => ({
+		slug: entry.slug,
+		title: pickLocalizedValue(entry.data.title, lang),
+		summary: pickLocalizedValue(entry.data.summary, lang),
+		period: pickLocalizedValue(entry.data.period, lang),
+		url: entry.data.url,
+		repo: entry.data.repo,
+		tags: entry.data.tags,
+		highlight: pickLocalizedList(entry.data.highlight, lang),
+		accent: entry.data.accent
+	}));
+
+const canonical = new URL(`/${lang}/`, origin).href;
+const alternates = languages.map((locale) => ({
+	lang: locale,
+	href: new URL(`/${locale}/`, origin).href
+}));
+---
+
+<BaseLayout title={copy.meta.title} description={copy.meta.description} canonical={canonical} lang={lang} alternates={alternates}>
+	<main id="top">
+		<TopNav
+			navItems={copy.navItems}
+			brandMeta={copy.brandMeta}
+			currentLang={lang}
+			navigationLabel={copy.navigationLabel}
+			languageLabel={copy.languageLabel}
+			languageNames={copy.languageNames}
+		/>
+		<HeroSection hero={copy.hero} />
+		<SkillMatrix skills={copy.skills} />
+		<ExperienceTimeline experience={copy.experience} />
+		<ProjectsSection projects={projects} copy={copy.projects} />
+		<AboutMe about={copy.about} />
+		<ContactPanel contact={copy.contact} />
+	</main>
+</BaseLayout>

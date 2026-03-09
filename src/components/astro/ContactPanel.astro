@@ -1,20 +1,26 @@
+﻿---
+import type { SiteCopy } from '../../i18n/siteCopy';
+
+interface Props {
+	contact: SiteCopy['contact'];
+}
+
+const { contact } = Astro.props;
+---
+
 <section class="section-shell" id="contacts">
 	<div class="section-heading">
-		<p class="section-eyebrow">Contact</p>
-		<h2>Готовий до співпраці та нових викликів</h2>
+		<p class="section-eyebrow">{contact.eyebrow}</p>
+		<h2>{contact.title}</h2>
 	</div>
 	<div class="contact-grid">
-		<a class="panel contact-item" href="mailto:coldboycrio314@gmail.com">
-			<span>Email</span>
-			<strong>coldboycrio314@gmail.com</strong>
-		</a>
-		<a class="panel contact-item" href="tel:+380953147381">
-			<span>Телефон</span>
-			<strong>+380 (95) 314-73-81</strong>
-		</a>
-		<a class="panel contact-item" href="https://www.dnd-codex.guide/" target="_blank" rel="noreferrer">
-			<span>Відкритий проєкт</span>
-			<strong>dnd-codex.guide</strong>
-		</a>
+		{
+			contact.items.map((item) => (
+				<a class="panel contact-item" href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noreferrer' : undefined}>
+					<span>{item.label}</span>
+					<strong>{item.value}</strong>
+				</a>
+			))
+		}
 	</div>
 </section>

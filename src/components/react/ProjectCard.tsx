@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+﻿import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useMemo, useState, type CSSProperties, type PointerEvent } from 'react';
 
 export interface ProjectCardData {
@@ -13,8 +13,16 @@ export interface ProjectCardData {
 	accent: string;
 }
 
+export interface ProjectCardLabels {
+	openProject: string;
+	showDetails: string;
+	hideDetails: string;
+	openRepository: string;
+}
+
 interface ProjectCardProps {
 	project: ProjectCardData;
+	labels: ProjectCardLabels;
 	index: number;
 }
 
@@ -24,7 +32,7 @@ const springSettings = {
 	mass: 0.52
 };
 
-export default function ProjectCard({ project, index }: ProjectCardProps) {
+export default function ProjectCard({ project, labels, index }: ProjectCardProps) {
 	const [expanded, setExpanded] = useState(false);
 	const pointerX = useMotionValue(0);
 	const pointerY = useMotionValue(0);
@@ -77,7 +85,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 			</ul>
 			<div className="project-card__actions">
 				<a href={project.url} target="_blank" rel="noreferrer" className="button button--ghost">
-					Відкрити проєкт
+					{labels.openProject}
 				</a>
 				<button
 					type="button"
@@ -85,7 +93,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 					onClick={() => setExpanded((current) => !current)}
 					aria-expanded={expanded}
 				>
-					{expanded ? 'Сховати деталі' : 'Показати деталі'}
+					{expanded ? labels.hideDetails : labels.showDetails}
 				</button>
 			</div>
 			<AnimatePresence initial={false}>
@@ -104,7 +112,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						</ul>
 						{project.repo && (
 							<a href={project.repo} target="_blank" rel="noreferrer" className="text-link">
-								Відкрити репозиторій
+								{labels.openRepository}
 							</a>
 						)}
 					</motion.div>

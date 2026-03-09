@@ -1,32 +1,63 @@
----
-import { getCollection } from 'astro:content';
-import AboutMe from '../components/astro/AboutMe.astro';
-import ContactPanel from '../components/astro/ContactPanel.astro';
-import ExperienceTimeline from '../components/astro/ExperienceTimeline.astro';
-import HeroSection from '../components/astro/HeroSection.astro';
-import ProjectsSection from '../components/astro/ProjectsSection.astro';
-import SkillMatrix from '../components/astro/SkillMatrix.astro';
-import TopNav from '../components/astro/TopNav.astro';
-import type { ProjectCardData } from '../components/react/ProjectCard';
-import BaseLayout from '../layouts/BaseLayout.astro';
-
-const projectEntries = await getCollection('projects');
-const projects: ProjectCardData[] = projectEntries
-	.sort((a, b) => a.data.order - b.data.order)
-	.map((entry) => ({
-		slug: entry.slug,
-		...entry.data
-	}));
+﻿---
+const storageKey = 'resume-lang';
+const fallbackPath = '/en/';
 ---
 
-<BaseLayout>
-	<main id="top">
-		<TopNav />
-		<HeroSection />
-		<SkillMatrix />
-		<ExperienceTimeline />
-		<ProjectsSection projects={projects} />
-		<AboutMe />
-		<ContactPanel />
-	</main>
-</BaseLayout>
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta http-equiv="refresh" content={`5;url=${fallbackPath}`} />
+		<title>Redirecting...</title>
+		<script is:inline define:vars={{ storageKey }}>
+			(() => {
+				const readStoredLanguage = () => {
+					try {
+						const stored = window.localStorage.getItem(storageKey);
+						return stored === 'uk' || stored === 'en' ? stored : null;
+					} catch {
+						return null;
+					}
+				};
+
+				const detectLanguage = () => {
+					const locales = Array.isArray(navigator.languages) && navigator.languages.length > 0
+						? navigator.languages
+						: [navigator.language];
+
+					for (const locale of locales) {
+						const normalized = String(locale ?? '').toLowerCase();
+						if (normalized.startsWith('uk')) {
+							return 'uk';
+						}
+
+						if (normalized.startsWith('en')) {
+							return 'en';
+						}
+
+						if (normalized.startsWith('ru')) {
+							return 'en';
+						}
+					}
+
+					return 'en';
+				};
+
+				const targetLang = readStoredLanguage() ?? detectLanguage();
+
+				try {
+					window.localStorage.setItem(storageKey, targetLang);
+				} catch {
+					// Ignore storage failures and continue with the redirect.
+				}
+
+				window.location.replace(`/${targetLang}/`);
+			})();
+		</script>
+		<noscript>
+			<meta http-equiv="refresh" content={`0;url=${fallbackPath}`} />
+		</noscript>
+	</head>
+	<body></body>
+</html>

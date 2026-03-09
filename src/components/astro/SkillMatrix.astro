@@ -1,32 +1,21 @@
----
-const groups = [
-	{
-		title: 'Основні технології',
-		items: ['JavaScript (ES6+)', 'TypeScript', 'HTML5', 'CSS3']
-	},
-	{
-		title: 'Фреймворки та UI',
-		items: ['React 19', 'Next.js', 'Vite', 'Tailwind CSS', 'Framer Motion', 'React Router']
-	},
-	{
-		title: 'Стан, форми, валідація',
-		items: ['TanStack Query', 'React Hook Form', 'Zod']
-	},
-	{
-		title: 'Інфраструктура',
-		items: ['Node.js', 'Vercel', 'Docker', 'Git / GitHub', 'PWA', 'SSR / SSG']
-	}
-];
+﻿---
+import type { SiteCopy } from '../../i18n/siteCopy';
+
+interface Props {
+	skills: SiteCopy['skills'];
+}
+
+const { skills } = Astro.props;
 ---
 
 <section class="section-shell" id="skills">
 	<div class="section-heading">
-		<p class="section-eyebrow">Tech Stack</p>
-		<h2>Стек, який дає швидкий UI і стабільний production</h2>
+		<p class="section-eyebrow">{skills.eyebrow}</p>
+		<h2>{skills.title}</h2>
 	</div>
 	<div class="skill-matrix">
 		{
-			groups.map((group) => (
+			skills.groups.map((group) => (
 				<article class="panel">
 					<h3>{group.title}</h3>
 					<ul class="chip-list">

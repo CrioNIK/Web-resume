@@ -1,22 +1,21 @@
----
-import ProjectsShowcase from '../react/ProjectsShowcase';
+﻿---
+import type { SiteCopy } from '../../i18n/siteCopy';
 import type { ProjectCardData } from '../react/ProjectCard';
+import ProjectsShowcase from '../react/ProjectsShowcase';
 
 interface Props {
 	projects: ProjectCardData[];
+	copy: SiteCopy['projects'];
 }
 
-const { projects } = Astro.props;
+const { projects, copy } = Astro.props;
 ---
 
 <section class="section-shell" id="projects">
 	<div class="section-heading">
-		<p class="section-eyebrow">Projects</p>
-		<h2>Шоукейс рішень: продуктивність + UX-інтерактив</h2>
-		<p class="section-note">
-			React-остріви підвантажуються тільки коли секція входить у viewport (`client:visible`), щоб
-			не перевантажувати стартовий рендер.
-		</p>
+		<p class="section-eyebrow">{copy.eyebrow}</p>
+		<h2>{copy.title}</h2>
+		<p class="section-note">{copy.note}</p>
 	</div>
-	<ProjectsShowcase client:visible projects={projects} />
+	<ProjectsShowcase client:visible projects={projects} labels={copy.labels} />
 </section>

@@ -1,27 +1,57 @@
----
-const navItems = [
-	{ label: 'Навички', href: '#skills' },
-	{ label: 'Досвід', href: '#experience' },
-	{ label: 'Проєкти', href: '#projects' },
-	{ label: 'Про мене', href: '#about' },
-	{ label: 'Контакти', href: '#contacts' }
+﻿---
+import type { Lang, NavItem } from '../../i18n/siteCopy';
+
+interface Props {
+	navItems: NavItem[];
+	brandMeta: string;
+	currentLang: Lang;
+	navigationLabel: string;
+	languageLabel: string;
+	languageNames: Record<Lang, string>;
+}
+
+const { navItems, brandMeta, currentLang, navigationLabel, languageLabel, languageNames } = Astro.props;
+
+const languageLinks = [
+	{ code: 'uk' as const, short: 'UA', href: '/uk/' },
+	{ code: 'en' as const, short: 'EN', href: '/en/' }
 ];
 ---
 
 <header class="top-nav">
-	<a href="#top" class="brand-mark">
+	<a href={`/${currentLang}/#top`} class="brand-mark">
 		<span class="brand-mark__id">MB</span>
-		<span class="brand-mark__meta">Frontend Engineer</span>
+		<span class="brand-mark__meta">{brandMeta}</span>
 	</a>
-	<nav aria-label="Головна навігація">
-		<ul class="top-nav__list">
-			{
-				navItems.map((item) => (
-					<li>
-						<a href={item.href}>{item.label}</a>
-					</li>
-				))
-			}
-		</ul>
-	</nav>
+	<div class="top-nav__cluster">
+		<nav aria-label={navigationLabel}>
+			<ul class="top-nav__list">
+				{
+					navItems.map((item) => (
+						<li>
+							<a href={item.href}>{item.label}</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+		<div class="lang-switch" aria-label={languageLabel}>
+			<span class="lang-switch__label">{languageLabel}</span>
+			<div class="lang-switch__list">
+				{
+					languageLinks.map((item) => (
+						<a
+							href={item.href}
+							class:list={['lang-switch__link', item.code === currentLang && 'is-active']}
+							aria-label={`${languageLabel}: ${languageNames[item.code]}`}
+							aria-current={item.code === currentLang ? 'page' : undefined}
+							data-lang-switch={item.code}
+						>
+							{item.short}
+						</a>
+					))
+				}
+			</div>
+		</div>
+	</div>
 </header>

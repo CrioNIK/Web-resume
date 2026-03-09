@@ -1,10 +1,17 @@
----
-import HeroIntro from './HeroIntro.astro';
+﻿---
+import type { SiteCopy } from '../../i18n/siteCopy';
 import HeroScene from '../react/HeroScene';
+import HeroIntro from './HeroIntro.astro';
+
+interface Props {
+	hero: SiteCopy['hero'];
+}
+
+const { hero } = Astro.props;
 ---
 
 <section class="hero-shell section-shell" id="hero">
-	<HeroIntro />
+	<HeroIntro hero={hero} />
 	<div class="hero-visual panel">
 		<HeroScene client:only="react" />
 	</div>

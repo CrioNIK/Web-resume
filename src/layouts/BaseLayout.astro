@@ -1,27 +1,42 @@
----
+﻿---
+import type { Lang } from '../i18n/siteCopy';
 import '../styles/global.css';
+
+interface AlternateLink {
+	lang: string;
+	href: string;
+}
 
 interface Props {
 	title?: string;
 	description?: string;
 	canonical?: string;
+	lang?: Lang;
+	alternates?: AlternateLink[];
 }
 
 const {
-	title = 'Батурін Микита - Middle Frontend Developer (React / Next.js)',
-	description = 'Інтерактивне веб-резюме Middle Frontend Developer з акцентом на React, Next.js, TypeScript, PWA, SSR та UX-анімації.',
-	canonical
+	title = 'Mykyta Baturin | Middle Frontend Developer (React / Next.js)',
+	description = 'Interactive web resume for a Middle Frontend Developer focused on React, Next.js, TypeScript, PWA, SSR, and polished UX motion.',
+	canonical,
+	lang = 'uk',
+	alternates = []
 } = Astro.props;
 
-const pageUrl = canonical ?? Astro.url?.href ?? 'https://www.dnd-codex.guide/';
+const pageUrl = canonical ?? Astro.url?.href ?? 'http://localhost/';
+const locale = lang === 'uk' ? 'uk_UA' : 'en_US';
+const personName = lang === 'uk' ? 'Батурін Микита' : 'Mykyta Baturin';
+const storageKey = 'resume-lang';
 
 const personSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'Person',
-	name: 'Батурін Микита',
+	name: personName,
 	jobTitle: 'Middle Frontend Developer (React / Next.js)',
 	email: 'mailto:coldboycrio314@gmail.com',
 	telephone: '+380953147381',
+	url: pageUrl,
+	inLanguage: lang,
 	address: {
 		'@type': 'PostalAddress',
 		addressLocality: 'Kyiv',
@@ -42,7 +57,7 @@ const personSchema = {
 ---
 
 <!doctype html>
-<html lang="uk">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -52,9 +67,17 @@ const personSchema = {
 		<link rel="canonical" href={pageUrl} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
+		{
+			alternates.map((alternate) => <link rel="alternate" hrefLang={alternate.lang} href={alternate.href} />)
+		}
+		{
+			alternates.length > 0 && (
+				<link rel="alternate" hrefLang="x-default" href={alternates.find((item) => item.lang === 'en')?.href ?? alternates[0].href} />
+			)
+		}
 
 		<meta property="og:type" content="website" />
-		<meta property="og:locale" content="uk_UA" />
+		<meta property="og:locale" content={locale} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={pageUrl} />
@@ -71,6 +94,40 @@ const personSchema = {
 
 		<title>{title}</title>
 		<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+		<script is:inline define:vars={{ lang, storageKey }}>
+			(() => {
+				const persistLanguage = (value) => {
+					try {
+						window.localStorage.setItem(storageKey, value);
+					} catch {
+						return;
+					}
+				};
+
+				persistLanguage(lang);
+
+				const bindSwitches = () => {
+					document.querySelectorAll('[data-lang-switch]').forEach((element) => {
+						element.addEventListener(
+							'click',
+							() => {
+								const nextLang = element.getAttribute('data-lang-switch');
+								if (nextLang === 'uk' || nextLang === 'en') {
+									persistLanguage(nextLang);
+								}
+							},
+							{ passive: true }
+						);
+					});
+				};
+
+				if (document.readyState === 'loading') {
+					document.addEventListener('DOMContentLoaded', bindSwitches, { once: true });
+				} else {
+					bindSwitches();
+				}
+			})();
+		</script>
 	</head>
 	<body>
 		<div class="grain-overlay" aria-hidden="true"></div>
