@@ -4,8 +4,8 @@ title:
   uk: "Interactive Resume Lab"
   en: "Interactive Resume Lab"
 summary:
-  uk: "Персональне веб-резюме на Astro з multipage-навігацією, workbench-модулями, HUD-ефектами та окремими MDX case-study сторінками."
-  en: "A personal web resume built with Astro, multi-page navigation, workbench modules, HUD effects, and dedicated MDX case-study pages."
+  uk: "Персональний showcase-сайт з HUD-інтерфейсом, 3D-сценою, звуковим feedback, досьє проєктів і бібліотекою reusable-асетів."
+  en: "A personal showcase site with a HUD interface, a 3D scene, sound feedback, project dossiers, and a reusable asset library."
 period:
   uk: "2026"
   en: "2026"
@@ -19,25 +19,25 @@ tags:
   - "Scroll-Driven CSS"
 highlight:
   uk:
-    - "Розділення на легкий статичний каркас і динамічні islands лише там, де потрібен JS."
-    - "MDX case-study route для проєктів з красивим TOC, таблицями, кодовими блоками й кастомними Astro-компонентами."
-    - "Інтерактивні workbench-модулі для проєктів та асетів із detail-панелями."
-    - "3D background runtime, glitch-route transitions і звуковий feedback як частина єдиного HUD-інтерфейсу."
+    - "HUD-інтерфейс із 3D-фоном, glitch-переходами й звуковим feedback."
+    - "Досьє проєктів із технічними розборами, таблицями, кодовими блоками й кастомними контентними секціями."
+    - "Каталог асетів і UI-заготовок для reusable-патернів і подальшої публікації."
+    - "Static-first frontend з islands тільки там, де потрібна жива взаємодія."
   en:
-    - "Split into a lightweight static shell and dynamic islands only where JavaScript is actually needed."
-    - "An MDX case-study route for projects with a styled TOC, tables, code blocks, and custom Astro components."
-    - "Interactive workbench modules for projects and assets with detail panels."
-    - "A 3D background runtime, glitch route transitions, and sound feedback inside one consistent HUD interface."
+    - "A HUD interface with a 3D background, glitch transitions, and sound feedback."
+    - "Project dossiers with technical breakdowns, tables, code blocks, and custom content sections."
+    - "An asset catalog and UI building blocks prepared for reuse and future publishing."
+    - "A static-first frontend with islands only where live interaction is actually needed."
 accent: "#ff525f"
 role:
-  uk: "Концепт / UI system / Astro architecture"
-  en: "Concept / UI system / Astro architecture"
+  uk: "Концепт / UI system / Frontend architecture"
+  en: "Concept / UI system / Frontend architecture"
 status:
   uk: "Live / Iterating"
   en: "Live / Iterating"
 overview:
-  uk: "Це саме це веб-резюме: полігон для перевірки multipage-навігації, 3D-background layer, glitch-переходів, звукового feedback і asset-like showcase-підходу."
-  en: "This very web resume acts as a lab for testing multi-page navigation, a 3D background layer, glitch transitions, sound feedback, and an asset-style showcase approach."
+  uk: "Персональний proof-of-work продукт, через який показані реальні кейси, стек, UI-підхід, інтерактивні патерни й власні заготовки для інтерфейсів."
+  en: "A personal proof-of-work product that presents real case studies, stack choices, UI direction, interaction patterns, and custom interface assets."
 responsibilities:
   uk:
     - "Зібрав static-first каркас на Astro з двомовною маршрутизацією."
@@ -71,13 +71,13 @@ delivery:
     - "Support for `@astrojs/mdx` so richer case-study pages can live next to regular markdown entries."
 impact:
   uk:
-    - "Сайт перестає бути просто резюме й стає proof-of-work інтерфейсом."
-    - "Окремі сторінки дають глибший фокус на кожен блок замість однієї довгої стрічки."
-    - "Asset-page створює основу для публікації власних UI-напрацювань у майбутньому."
+    - "Сайт працює як proof-of-work showcase, а не як сухе CV."
+    - "Кейси, UI-асети й контентні сторінки можна розвивати незалежно без втрати цілісності."
+    - "Є база для публікації власних компонентів, кейсів і візуальних експериментів."
   en:
-    - "The site stops being just a resume and becomes a proof-of-work interface."
-    - "Dedicated pages create deeper focus for each area instead of a single long scroll."
-    - "The assets page creates a base for publishing your own UI building blocks over time."
+    - "The site works as a proof-of-work showcase instead of a dry CV."
+    - "Case studies, UI assets, and content pages can evolve independently without losing cohesion."
+    - "It provides a base for publishing custom components, case studies, and visual experiments."
 codeLanguage: "astro"
 codeSnippet: |
   <ProjectsWorkbench

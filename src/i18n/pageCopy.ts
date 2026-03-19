@@ -77,15 +77,15 @@ export const pageCopy: Record<Lang, PageCopy> = {
 			contacts: 'Контакти'
 		},
 		home: {
-			eyebrow: 'Command Hub',
-			title: 'Інтерактивне резюме фронтенд-розробника',
+			eyebrow: 'Frontend Engineer',
+			title: 'Фронтенд-розробник для продуктових інтерфейсів',
 			summary:
-				'Окремі сторінки для навичок, досвіду, проєктів, асетів і контактів. Швидкий маршрут до потрібного блоку без довгої стрічки й без зайвих пояснень про сам формат сайту.',
+				'React, TypeScript, SSR, контентні системи, data flow, 3D і інтерактивні інтерфейси. Кейси, стек, досвід і робочі артефакти з реальних задач.',
 			node: 'NODE // HOME-00',
-			modulesEyebrow: 'Точки доступу',
-			modulesTitle: 'Доступні модулі системи',
+			modulesEyebrow: 'Profile Surface',
+			modulesTitle: 'Кейси, стек і робоча практика',
 			modulesSummary:
-				'Стек, досвід, кейси, асети й контакти винесені в окремі розділи, щоб їх можна було дивитися без зайвого шуму.',
+				'Продуктова розробка, UI-системи, контент, дані й reusable-артефакти з реальної роботи.',
 			moduleAction: 'Відкрити розділ',
 			moduleCards: {
 				skills: {
@@ -100,7 +100,7 @@ export const pageCopy: Record<Lang, PageCopy> = {
 				},
 				projects: {
 					title: 'Проєкти',
-					summary: 'Project workstation із правою панеллю рішень, архітектури, delivery-flow і технічних trade-offs.',
+					summary: 'Product-кейси з архітектурою, data flow, delivery і технічними trade-offs.',
 					node: 'NODE // PRJ-34'
 				},
 				about: {
@@ -110,12 +110,12 @@ export const pageCopy: Record<Lang, PageCopy> = {
 				},
 				assets: {
 					title: 'Асети',
-					summary: 'Вітрина UI-заготовок, мікровзаємодій, кодових фрагментів і reusable-патернів.',
+					summary: 'UI-заготовки, мікровзаємодії, кодові фрагменти й reusable-патерни для реальних інтерфейсів.',
 					node: 'NODE // AST-89'
 				},
 				contacts: {
 					title: 'Контакти',
-					summary: 'Фінальний вузол із каналами звʼязку й точкою входу для співпраці.',
+					summary: 'Канали звʼязку для співпраці, продуктового найму, фрилансу й технічних задач.',
 					node: 'NODE // CNT-13'
 				}
 			}
@@ -134,9 +134,9 @@ export const pageCopy: Record<Lang, PageCopy> = {
 				node: 'NODE // EXP-21'
 			},
 			projects: {
-				eyebrow: 'Projects Workstation',
-				title: 'Розбір production-кейсів через технічне досьє',
-				summary: 'Кожен проєкт можна відкрити в праву панель і подивитися не тільки стек, а й архітектурні рішення, delivery та наслідки для продукту.',
+				eyebrow: 'Project Cases',
+				title: 'Production-кейси й технічні рішення',
+				summary: 'Проєкти з фокусом на архітектуру, інженерні компроміси, delivery і вплив на продукт.',
 				node: 'NODE // PRJ-34'
 			},
 			about: {
@@ -148,13 +148,13 @@ export const pageCopy: Record<Lang, PageCopy> = {
 			assets: {
 				eyebrow: 'Assets Deck',
 				title: 'Каталог заготовок, UI-компонентів і кодових прикладів',
-				summary: 'Окремий модуль під reusable-асети: можна показувати приклад, код, use-case і розвивати його як власну бібліотеку.',
+				summary: 'UI-компоненти, заготовки й кодові патерни, які можна перевикористовувати в реальних інтерфейсах.',
 				node: 'NODE // AST-89'
 			},
 			contacts: {
 				eyebrow: 'Contact Node',
-				title: 'Фінальний вузол для співпраці',
-				summary: 'Контактна точка лишилась окремою сторінкою, щоб завершення маршруту теж відчувалось як частина інтерфейсу.',
+				title: 'Контакти для роботи й співпраці',
+				summary: 'Пошта, месенджери й точки входу для комунікації по продукту, фрилансу й найму.',
 				node: 'NODE // CNT-13'
 			}
 		},
@@ -199,32 +199,32 @@ export const pageCopy: Record<Lang, PageCopy> = {
 			contacts: 'Contact'
 		},
 		home: {
-			eyebrow: 'Command Hub',
-			title: 'Interactive frontend resume',
+			eyebrow: 'Frontend Engineer',
+			title: 'Frontend engineer for product interfaces',
 			summary:
-				'Separate pages for skills, experience, projects, assets, and contact. A faster route to the relevant section without turning the top banner into a changelog.',
+				'React, TypeScript, SSR, content systems, data flow, 3D, and interactive interface work. Case studies, stack, experience, and working assets from real product tasks.',
 			node: 'NODE // HOME-00',
-			modulesEyebrow: 'Access Nodes',
-			modulesTitle: 'Available system modules',
+			modulesEyebrow: 'Profile Surface',
+			modulesTitle: 'Case studies, stack, and working practice',
 			modulesSummary:
-				'Stack, experience, projects, assets, and contact live in separate sections so each one can stay focused.',
+				'Product development, UI systems, content, data, and reusable artifacts from real work.',
 			moduleAction: 'Open section',
 			moduleCards: {
 				skills: { title: 'Skills', summary: 'Technology stack, tooling, infrastructure, and the areas where I am strongest in frontend work.', node: 'NODE // SKL-11' },
 				experience: { title: 'Experience', summary: 'A timeline of real work: product building, SSR, caching strategy, and Unity foundation.', node: 'NODE // EXP-21' },
-				projects: { title: 'Projects', summary: 'A project workstation with a right-side dossier for architecture, delivery flow, and engineering trade-offs.', node: 'NODE // PRJ-34' },
+				projects: { title: 'Projects', summary: 'Product cases covering architecture, data flow, delivery, and engineering trade-offs.', node: 'NODE // PRJ-34' },
 				about: { title: 'About', summary: 'A compact context page covering how I think, how I take ownership, and what matters in product work.', node: 'NODE // BIO-55' },
-				assets: { title: 'Assets', summary: 'A showcase for UI building blocks, interaction patterns, code snippets, and reusable pieces.', node: 'NODE // AST-89' },
-				contacts: { title: 'Contact', summary: 'The final node with collaboration channels and a clean handoff into conversation.', node: 'NODE // CNT-13' }
+				assets: { title: 'Assets', summary: 'UI building blocks, interaction patterns, code snippets, and reusable pieces for real interfaces.', node: 'NODE // AST-89' },
+				contacts: { title: 'Contact', summary: 'Contact channels for collaboration, freelance work, hiring, and technical conversations.', node: 'NODE // CNT-13' }
 			}
 		},
 		pages: {
 			skills: { eyebrow: 'Skills Matrix', title: 'A technology module with a real production angle', summary: 'Not a buzzword list, but a stack that can actually support interface work, data flow, SSR, caching, and release delivery.', node: 'NODE // SKL-11' },
 			experience: { eyebrow: 'Experience Log', title: 'A timeline of decisions, not just job labels', summary: 'The focus is on what was built, what engineering problems were solved, and how those solutions scaled.', node: 'NODE // EXP-21' },
-			projects: { eyebrow: 'Projects Workstation', title: 'Production case studies through technical dossiers', summary: 'Each project opens into a right-side panel with stack, architecture choices, delivery notes, and product impact.', node: 'NODE // PRJ-34' },
+			projects: { eyebrow: 'Project Cases', title: 'Production case studies and technical decisions', summary: 'Projects with a focus on architecture, engineering trade-offs, delivery, and product impact.', node: 'NODE // PRJ-34' },
 			about: { eyebrow: 'Profile Core', title: 'Context, work style, and engineering temperament', summary: 'A short page without corporate filler: who I am, how I make decisions, and what matters to me in product work.', node: 'NODE // BIO-55' },
-			assets: { eyebrow: 'Assets Deck', title: 'A catalog of building blocks, UI assets, and code examples', summary: 'A dedicated module for reusable pieces, with examples, code, and use cases that can grow into a personal component library.', node: 'NODE // AST-89' },
-			contacts: { eyebrow: 'Contact Node', title: 'The final node for collaboration', summary: 'The contact endpoint remains a dedicated page so the end of the route feels like a designed part of the interface.', node: 'NODE // CNT-13' }
+			assets: { eyebrow: 'Assets Deck', title: 'A catalog of building blocks, UI assets, and code examples', summary: 'UI components, interaction patterns, and reusable code that can be carried into real interfaces.', node: 'NODE // AST-89' },
+			contacts: { eyebrow: 'Contact Node', title: 'Contacts for work and collaboration', summary: 'Email, messengers, and entry points for product work, freelance requests, and hiring conversations.', node: 'NODE // CNT-13' }
 		},
 		projectsWorkbench: {
 			openDossier: 'Open dossier',

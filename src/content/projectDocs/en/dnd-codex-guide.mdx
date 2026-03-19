@@ -52,8 +52,7 @@ export const slices = [
 
 ## What the product actually does
 
-This is not a demo for one animation and not a page about one recent update. It is a reference product where the user
-interacts with a large body of structured content:
+It is a reference product where the user interacts with a large body of structured content:
 
 - classes;
 - species;
@@ -139,8 +138,7 @@ import ClassSearchIsland from "../../components/ClassSearchIsland.tsx";
 <ClassSearchIsland client:visible items={classSearchItems} />
 ```
 
-The value here is not Astro as a buzzword. The value is the clearer split of responsibilities between reference content,
-search, UI, and user flows.
+That split keeps reference pages lighter and reserves interactivity for the places where it actually matters.
 
 ## Backend and system flows
 
@@ -168,9 +166,9 @@ There are still areas that live outside the public knowledge sections, and they 
 
 They demand a different level of interactivity than reference pages, so they do not belong in the same delivery pattern.
 
-## Why this case matters
+## Current product state
 
-Because it shows a product as a system:
+Right now the product already has:
 
 1. a large knowledge catalog with its own structure;
 2. a client UI with real data behavior;
