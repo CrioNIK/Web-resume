@@ -37,8 +37,8 @@ status:
   uk: "Live / Active development"
   en: "Live / Active development"
 overview:
-  uk: "Це не 'основний' чи 'центральний' проєкт, а поточний найповніше оформлений live-case у портфоліо. Саме на ньому вже видно React/Vite SSR основу, Astro migration pilot, MDX-контентний шар і реальний backend-контур."
-  en: "This is not the 'main' or 'central' project, but the most fully documented live case in the portfolio right now. It already shows the React/Vite SSR foundation, the Astro migration pilot, the MDX content layer, and a real backend contour."
+  uk: "Поточний найповніше оформлений live-case у портфоліо. Саме на ньому вже видно React/Vite SSR основу, Astro migration pilot, MDX-контентний шар і реальний backend-контур."
+  en: "The most fully documented live case in the portfolio right now. It already shows the React/Vite SSR foundation, the Astro migration pilot, the MDX content layer, and a real backend contour."
 responsibilities:
   uk:
     - "Спроєктував React/Vite SSR-ядро для живого довідника з великою кількістю контентних маршрутів."
