@@ -1,157 +1,88 @@
 ---
 slug: "dnd-codex-guide"
 projectSlug: "dnd-codex-frontend"
-title: "DND Codex Guide: React-платформа, яка вже отримала Astro + MDX шар"
-summary: "Живий D&D-продукт із React 19 + Vite SSR у ядрі, TanStack Query для даних, PWA-поведінкою та окремим Astro pilot для публічних довідкових секцій, статичних маршрутів і MDX-контенту."
+title: "DND Codex Guide"
+summary: "Продуктовий кейс про онлайн-довідник для D&D: великий каталог контенту, клієнтський рендер, пошук, knowledge-секції, окремий API і контрольований delivery."
 eyebrow: "Case Study // DND-01"
 node: "NODE // DND-01"
-teaser: "Поточний найповніше розписаний живий кейс, на якому вже видно і продуктову логіку, і архітектуру, і migration path."
+teaser: "Кейс про структуру довідника, дані, пошук, контент і delivery, а не про один конкретний апдейт."
 ---
 
 import FeatureTiles from '../../../components/astro/project-docs/FeatureTiles.astro';
 import MetricsGrid from '../../../components/astro/project-docs/MetricsGrid.astro';
 import SignalCallout from '../../../components/astro/project-docs/SignalCallout.astro';
 
-export const migrationMetrics = [
-	{ label: 'Frontend bundle', value: '2,728.19 kB raw', note: 'Поточний React/Vite фронтенд після build, без магічного заниження цифр.' },
-	{ label: 'Gzip bundle', value: '604.39 kB gzip', note: 'Саме цей розмір і підштовхнув до selective hydration, а не до ще одного round of wishful thinking.' },
-	{ label: 'Prerendered HTML', value: '1020 routes', note: 'Публічний довідковий шар уже має велику поверхню, яку логічно віддавати статично.' },
-	{ label: 'Astro pilot', value: 'classes + species', note: 'Перші секції вже винесені в окремі Astro routes з MDX-контентом для класових фіч.' }
+export const metrics = [
+	{ label: 'Контентна поверхня', value: '1020 HTML routes', note: 'Публічний довідковий шар уже достатньо великий, щоб рендер і delivery мали реальне значення.' },
+	{ label: 'Клієнтський bundle', value: '2,728.19 kB raw', note: 'Поточний frontend не маленький, тому дисципліна з hydration і routing тут не абстракція.' },
+	{ label: 'Data layer', value: 'TanStack Query', note: 'Кешування, повторні запити й стабільні стани інтерфейсу.' },
+	{ label: 'Backend', value: 'Django / DRF / JWT', note: 'Окремий API-контур для auth, profiles, comments, notifications і docs.' }
 ];
 
-export const shippedSlices = [
+export const slices = [
 	{
-		meta: 'Slice 01',
-		title: 'Гібридний migration path замість тотального переписування',
-		description: 'Ядро продукту лишається в React/Vite SSR, а публічні секції переносяться в Astro окремими модулями без руйнування чинних slug і маршрутів.'
+		meta: 'Product UI',
+		title: 'Клієнтська частина довідника',
+		description: 'React 19, TypeScript, Vite SSR, маршрутизація, search flows, переходи між великими knowledge-блоками й керований стан даних.'
 	},
 	{
-		meta: 'Slice 02',
-		title: 'MDX-дерево для класових фіч',
-		description: 'Контент класів уже винесений у `dnd/src/content/ClassesFeatures/**/*.mdx` з можливістю керувати порядком через manifest і fallback-побудовою дерева.'
+		meta: 'Content',
+		title: 'Контент і довідкові секції',
+		description: 'Класи, види, feature docs, редакторські матеріали й окремий контентний pipeline для knowledge-сторінок.'
 	},
 	{
-		meta: 'Slice 03',
-		title: 'React islands тільки там, де вони реально дають користь',
-		description: 'Пошук у публічних секціях винесений в окремі `client:visible` islands, замість того щоб гідрувати всю сторінку монолітом.'
+		meta: 'Search',
+		title: 'Пошук і навігація',
+		description: 'Швидкий доступ до великих масивів довідкових даних, окремі маршрути для публічних сторінок і контрольоване розбиття UI по сценаріях.'
 	},
 	{
-		meta: 'Slice 04',
-		title: 'Контрольований delivery stack',
-		description: 'Окремо живе Django API з JWT, docs, Docker/Fly.io flow; фронтенд і міграційний Astro pilot можуть еволюціонувати без змішування відповідальностей.'
+		meta: 'Infra',
+		title: 'API і delivery',
+		description: 'Окремий backend, документація, auth-контур, повторюваний деплой і можливість розвивати продукт шарами, а не одним монолітом.'
 	}
 ];
 
-<SignalCallout eyebrow="Snapshot" title="Що це за кейс">
+<SignalCallout eyebrow="Snapshot" title="Що це за проєкт">
 	<p>
-		`DND Codex Guide` це <strong>поточний найбільш розгорнутий live case</strong>, де вже видно кілька незалежних інженерних
-		шарів: React/Vite SSR додаток, Astro pilot для knowledge-секцій, MDX-контентний pipeline і окремий backend API.
+		`DND Codex Guide` це живий D&D-довідник, де важливі одразу кілька речей: швидкий доступ до великої довідкової
+		поверхні, стабільна робота з даними, зрозумілі маршрути, редакторський контент і окремий API для користувацьких
+		сценаріїв.
 	</p>
 </SignalCallout>
 
-## Швидкий зріз
+## Що саме робить продукт
 
-`DND Codex Guide` починався як великий інтерактивний довідник на React, але з часом стало зрозуміло, що публічна
-енциклопедична частина має іншу природу, ніж auth, comments, notifications чи user flows.
+Це не демка однієї анімації і не презентація одного технічного апдейту. Це довідковий продукт, у якому користувач
+постійно працює з великим набором даних:
 
-Саме тому проєкт зараз рухається не в напрямку “ще більше клієнтського JS”, а в напрямку <strong>контрольованого
-розділення шарів</strong>:
+- класи;
+- види;
+- feature docs;
+- пов'язані довідкові матеріали;
+- користувацькі сценарії, які вже виходять за межі простої статичної енциклопедії.
 
-- React/Vite SSR лишається там, де потрібна насичена взаємодія, стан, форми, client-side flows.
-- Astro бере на себе публічні knowledge routes, де важливі HTML-first delivery, clean routing і нижча вартість гідрації.
-- MDX стає нормальним редакторським форматом для довідкових feature docs.
+Тому тут важлива не одна бібліотека сама по собі, а баланс між контентом, рендером, даними й delivery.
 
-<MetricsGrid items={migrationMetrics} />
+<MetricsGrid items={metrics} />
 
-## Архітектурна модель
+## Архітектурна карта
 
-| Layer | Що там живе | Навіщо цей шар існує |
+| Шар | Що він робить | Навіщо він потрібен |
 | --- | --- | --- |
-| React 19 + Vite SSR | Основний продукт, rich UI, форми, клієнтські сценарії, роутинг, кешування | Дає продуктову гнучкість там, де сторінка не є просто статтею |
-| TanStack Query | Серверний стан, повторні запити, revalidation, UX без мерехтіння | Тримає дані передбачуваними, а переходи стабільними |
-| Astro pilot | `classes`, `species`, статичні public routes, pages для knowledge-content | Зменшує область гідрації й повертає HTML-first delivery для довідкових розділів |
-| MDX content tree | Класові фічі в `ClassesFeatures`, редакторські нотатки, контрольований контент | Дає контенту власну структуру, а не ховає все в JS-об’єктах або сирому HTML |
-| Django backend | Auth, API, comments, profiles, notifications, OpenAPI docs | Відокремлює data-contract і user-data сценарії від UI-рівня |
+| Frontend | React 19, TypeScript, Vite SSR, маршрутизація, пошук, UI-стан | Дає продуктовий інтерфейс для роботи з великим knowledge-каталогом |
+| Data layer | TanStack Query, кешування, revalidation, контроль повторних запитів | Тримає UX стабільним там, де даних багато і вони живуть не в одному local state |
+| Content layer | Knowledge-секції, feature docs, окремий контентний pipeline | Дозволяє розвивати довідкові матеріали без змішування всього в один UI-шар |
+| Backend | Django, DRF, JWT, docs, comments/profiles/notifications | Виносить auth і системні сценарії в окремий контрактний контур |
 
-## Що вже реально оновлено
+## Основні робочі зрізи
 
-<FeatureTiles items={shippedSlices} />
+<FeatureTiles items={slices} />
 
-## Astro інтеграція не як декор, а як migration tool
+## Дані, стани й взаємодія
 
-Окремий `dnd-astro-pilot` уже піднятий як робочий proof of concept. У ньому є і `@astrojs/react`, і `@astrojs/mdx`,
-і alias до legacy-коду, щоб переносити публічні секції поетапно, а не зносити весь застосунок до фундаменту.
-
-```js
-import { defineConfig } from "astro/config";
-import mdx from "@astrojs/mdx";
-import react from "@astrojs/react";
-
-export default defineConfig({
-  integrations: [mdx(), react()],
-});
-```
-
-Тут ключова думка проста: <strong>Astro не обгортає весь старий фронтенд</strong>. Він бере на себе новий, дешевший у
-гідрації delivery path для публічних knowledge-сторінок.
-
-## MDX pipeline для класових фіч
-
-Найпоказовіша зміна зараз не в “ще одному layout”, а в тому, що класові фічі вже виокремлені в MDX-дерево. Це
-перетворює важкий контент на керовану структуру, з якою можна працювати як з редакторською системою.
-
-| Механіка | Як працює | Чому це важливо |
-| --- | --- | --- |
-| `ClassesFeatures/**/*.mdx` | Кожна фіча стає окремим контентним модулем | Фічі більше не заховані в одному великому JS-шарі |
-| `manifest.ts/js/json` | Може задавати порядок, зв’язки, секції | Порядок і grouping перестають бути жорстко зашитими в UI |
-| Fallback scanning | Якщо manifest ще не готовий, Astro route збирає доступні MDX з дерева | Міграція не блокується одним відсутнім файлом |
-| `import.meta.glob()` | Завантажує feature modules ліниво як дерево контенту | Це чистий механізм для редакторського маршруту, а не самописний content loader |
-
-```ts
-const featureModules = import.meta.glob(
-  "../../../../dnd/src/content/ClassesFeatures/**/*.mdx"
-);
-
-const manifestModules = {
-  ...import.meta.glob("../../../../dnd/src/content/ClassesFeatures/manifest.ts"),
-  ...import.meta.glob("../../../../dnd/src/content/ClassesFeatures/manifest.js"),
-  ...import.meta.glob("../../../../dnd/src/content/ClassesFeatures/manifest.json"),
-};
-```
-
-Цей шматок важливий не через сам `glob`, а через ефект: контент стає <strong>операційно керованим</strong>.
-
-## Selective hydration замість “гідруй усе”
-
-У пілоті React не зник, але і не монтується без потреби. Пошукові блоки працюють як islands, тому knowledge-сторінки
-не платять за увесь клієнтський runtime одразу.
-
-```astro
----
-import ClassSearchIsland from "../../components/ClassSearchIsland.tsx";
----
-
-<ClassSearchIsland client:visible items={classSearchItems} />
-```
-
-Це дрібна стрічка коду, але наслідок серйозний: публічна сторінка залишається сторінкою, а не симуляцією SPA з
-повною гідрацією кожного абзацу.
-
-## Основний frontend усе ще сильний сам по собі
-
-Міграція в Astro не означає, що React-ядро проєкту “застаріло”. Навпаки, у live frontend уже є те, що потрібно для
-складного продуктового інтерфейсу:
-
-- `React 19`
-- `Vite SSR + prerender`
-- `TanStack Query`
-- `React Router 7`
-- `React Hook Form + Zod`
-- `Framer Motion`
-- `vite-plugin-pwa`
-- `react-markdown + remark-gfm + rehype-raw`
-
-Для стану даних базовий query-client уже налаштований на зрілу поведінку, а не на хаотичне refetch-пекло:
+Одна з ключових задач у такому продукті це не просто “показати дані”, а тримати переходи між сторінками й запитами
+передбачуваними. Тут важливо, щоб довідник не мерехтів, не ламав темп читання і не перетворював кожне відкриття
+сторінки на новий холодний старт.
 
 ```ts
 export const queryClient = new QueryClient({
@@ -165,49 +96,83 @@ export const queryClient = new QueryClient({
 });
 ```
 
-Тобто React-шар тут не “старий шар, який треба сховати”. Це окремий інструментальний рівень, який лишається там,
-де його сила реально виправдана.
+Це не “магічний оптимізатор”, але це правильна база для великого knowledge-продукту, де запити мають поводитися
+спокійно і передбачувано.
 
-## Backend як окремий інфраструктурний контур
+## Контент і knowledge-секції
 
-Окремо від frontend/pilot вже живе Django API:
+Окремий великий шмат цього продукту це довідковий контент. Саме тому knowledge-секції розвиваються окремим шляхом,
+щоб з ними можна було працювати як з контентною системою, а не тільки як з UI-компонентами.
+
+Що вже є в цьому контурі:
+
+- публічні маршрути для `classes` і `species`;
+- окреме дерево `ClassesFeatures`;
+- manifest/fallback-механіка для feature docs;
+- окремий delivery-path для довідкових сторінок.
+
+```ts
+const featureModules = import.meta.glob(
+  "../../../../dnd/src/content/ClassesFeatures/**/*.mdx"
+);
+
+const manifestModules = {
+  ...import.meta.glob("../../../../dnd/src/content/ClassesFeatures/manifest.ts"),
+  ...import.meta.glob("../../../../dnd/src/content/ClassesFeatures/manifest.js"),
+  ...import.meta.glob("../../../../dnd/src/content/ClassesFeatures/manifest.json"),
+};
+```
+
+Тут суть не в самому `glob`, а в тому, що контент отримує окрему структуру і перестає бути випадковим придатком
+компонентів.
+
+## Публічні сторінки і окремий delivery-path
+
+Для knowledge-секцій уже піднятий окремий delivery-path, де публічні сторінки можна віддавати без зайвого клієнтського
+шуму, а interactive частини підключати точково.
+
+```astro
+---
+import ClassSearchIsland from "../../components/ClassSearchIsland.tsx";
+---
+
+<ClassSearchIsland client:visible items={classSearchItems} />
+```
+
+Це важливо не тому, що тут є конкретно Astro. Це важливо тому, що продукт розділяється по ролях: довідковий контент,
+пошук, UI і user flows перестають жити одним безформним шаром.
+
+## Backend і системні сценарії
+
+Окремий backend-контур тут не декоративний. Саме він закриває:
 
 | Module | Що закриває |
 | --- | --- |
-| Django REST Framework | REST contract для клієнта |
-| Simple JWT | Авторизація та захищені user flows |
-| OpenAPI / docs | Прозора інтеграція та швидка перевірка endpoint-ів |
+| Django REST Framework | REST-контракт для клієнта |
+| Simple JWT | Авторизацію і захищені user flows |
+| OpenAPI / docs | Прозору перевірку endpoint-ів і інтеграцію |
 | Docker + Fly.io flow | Повторюваний delivery для live API |
 | Env-driven settings | Керований конфіг для local/dev/prod |
 
-Це важливо, бо `DND Codex` уже давно не зводиться до одного UI-репозиторію. Це система з кількома пов’язаними, але
-не тотожними шарами.
+Це дає продукту межі відповідальності, а не один repo-shaped клубок.
 
-## Що ще лишається за межами Astro migration
+## Активні зони розвитку
 
-<SignalCallout eyebrow="Scope" title="Що свідомо не перенесено" tone="cyan">
-	<p>
-		Astro pilot зараз не намагається забрати собі все. За межами переносу поки залишаються `auth`, `profiles`,
-		`comments`, `notifications` і стрічка постів. Це не прогалина, а навмисне обрізання scope, щоб не змішувати
-		content delivery з повноцінними user flows.
-	</p>
-</SignalCallout>
+Тут досі є шматки, які живуть окремо від публічних knowledge-секцій і правильно, що так:
 
-- Авторизація
-- Профілі користувачів
-- Коментарі
-- Сповіщення
-- Feed / posts
+- auth;
+- profiles;
+- comments;
+- notifications;
+- feed / posts.
 
-## Чому цей кейс вартий окремої сторінки
+Усі вони вимагають іншого рівня інтерактивності, ніж довідкові сторінки, тому й не змішуються в один delivery-патерн.
 
-Бо він показує не тільки результат, а й <strong>мислення про перенесення системи без зайвого hero-refactor</strong>.
-Тут є:
+## Чому цей кейс важливий
 
-1. чинний React-продукт;
-2. окремий Astro-шар для knowledge delivery;
-3. MDX pipeline для редакторського контенту;
-4. backend, який лишається контрактною основою для data/user сценаріїв.
+Бо він показує продукт не як набір окремих технологій, а як систему, у якій:
 
-Саме це і робить `DND Codex Guide` зараз одним із найцікавіших кейсів для портфоліо, бо на ньому вже видно, як продукт
-можна еволюціонувати без технічної театральності.
+1. великий knowledge-каталог має свою структуру;
+2. клієнтський UI має свою логіку роботи з даними;
+3. контент і рендер відокремлюються від auth/user flows;
+4. продукт можна розвивати шарами, а не одним великим переписуванням.

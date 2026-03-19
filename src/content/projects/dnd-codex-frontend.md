@@ -1,11 +1,11 @@
-﻿---
+---
 order: 1
 title:
-  uk: "DND Codex Guide - фронтенд-платформа"
-  en: "DND Codex Guide - frontend platform"
+  uk: "DND Codex Guide"
+  en: "DND Codex Guide"
 summary:
-  uk: "Живий D&D guide на React 19 + Vite SSR, який паралельно отримав Astro-пілот, статичні knowledge routes і MDX-пайплайн для feature docs."
-  en: "A live D&D guide on React 19 + Vite SSR that now also has an Astro pilot, static knowledge routes, and an MDX pipeline for feature docs."
+  uk: "Онлайн-довідник для D&D з великим каталогом класів, видів і довідкових матеріалів, SSR-рендером, пошуком, кешуванням і окремим API-контуром."
+  en: "An online D&D guide with a large catalog of classes, species, and reference content, plus SSR rendering, search, caching, and a separate API layer."
 period:
   uk: "2025 - теперішній час"
   en: "2025 - Present"
@@ -15,80 +15,80 @@ tags:
   - "TypeScript"
   - "Vite SSR"
   - "TanStack Query"
-  - "Astro 6 pilot"
-  - "MDX"
+  - "React Router 7"
   - "PWA"
+  - "Django API"
 highlight:
   uk:
-    - "React/Vite SSR ядро для живого продукту з великою контентною поверхнею і керованими переходами між сторінками."
-    - "Окремий Astro pilot для `classes` і `species`, щоб винести публічні knowledge routes у статичний delivery path."
-    - "Класові фічі винесені в `ClassesFeatures/**/*.mdx` з manifest/fallback логікою."
-    - "Паралельний розвиток frontend, MDX-контенту і backend API без тотального переписування всього продукту."
+    - "Велика довідкова поверхня з класами, видами й пов'язаними knowledge-секціями."
+    - "SSR, пошук, кешування і стабільна робота з даними в продуктовому інтерфейсі."
+    - "Окремий контентний pipeline для довідкових матеріалів і feature docs."
+    - "Backend API для auth, profiles, comments, notifications і контрактної роботи з даними."
   en:
-    - "A React/Vite SSR core for a live product with a large content surface and controlled page transitions."
-    - "A dedicated Astro pilot for `classes` and `species`, moving public knowledge routes into a static delivery path."
-    - "Class features extracted into `ClassesFeatures/**/*.mdx` with manifest and tree-fallback logic."
-    - "Frontend, MDX content, and backend API evolving in parallel without forcing a total rewrite."
+    - "A large reference surface with classes, species, and related knowledge sections."
+    - "SSR, search, caching, and stable data behavior in a product-facing interface."
+    - "A separate content pipeline for reference materials and feature docs."
+    - "A backend API for auth, profiles, comments, notifications, and data contracts."
 accent: "#ff3f5a"
 role:
-  uk: "Frontend architecture / Hybrid Astro migration / Content pipeline"
-  en: "Frontend architecture / Hybrid Astro migration / Content pipeline"
+  uk: "Product frontend / Content architecture / Delivery"
+  en: "Product frontend / Content architecture / Delivery"
 status:
   uk: "Live / Active development"
   en: "Live / Active development"
 overview:
-  uk: "Поточний найповніше оформлений live-case у портфоліо. Саме на ньому вже видно React/Vite SSR основу, Astro migration pilot, MDX-контентний шар і реальний backend-контур."
-  en: "The most fully documented live case in the portfolio right now. It already shows the React/Vite SSR foundation, the Astro migration pilot, the MDX content layer, and a real backend contour."
+  uk: "Живий продуктовий кейс із великою довідковою поверхнею, де поєднані клієнтський рендер, редакторський контент, пошук, маршрутизація і окремий API."
+  en: "A live product case with a large reference surface, combining client rendering, editorial content, search, routing, and a separate API."
 responsibilities:
   uk:
-    - "Спроєктував React/Vite SSR-ядро для живого довідника з великою кількістю контентних маршрутів."
-    - "Налаштував TanStack Query і загальну стратегію server-state без хаотичного мерехтіння інтерфейсу."
-    - "Підняв окремий Astro pilot для публічних секцій, не ламаючи поточний продукт і його URL-структуру."
-    - "Почав винесення редакторського контенту в MDX-дерево для класових фіч і knowledge pages."
+    - "Спроєктував клієнтську частину довідника на React/Vite SSR."
+    - "Налаштував роботу з даними через TanStack Query і контрольовані cache/state сценарії."
+    - "Побудував контентний контур для knowledge-секцій і feature docs."
+    - "Зв'язав frontend з окремим backend API для користувацьких і системних сценаріїв."
   en:
-    - "Designed the React/Vite SSR core for a live guide with a large content surface."
-    - "Configured TanStack Query and a predictable server-state strategy without noisy UI flicker."
-    - "Built a dedicated Astro pilot for public sections without breaking the current product or URL structure."
-    - "Started moving editorial content into an MDX tree for class features and knowledge pages."
+    - "Designed the client side of the guide on React/Vite SSR."
+    - "Configured data behavior through TanStack Query and controlled cache/state flows."
+    - "Built the content layer for knowledge sections and feature docs."
+    - "Integrated the frontend with a separate backend API for user and system flows."
 architecture:
   uk:
-    - "Гібридна модель: React/Vite SSR для продуктового UI, Astro для public knowledge routes."
-    - "Окремі `client:visible` islands у пілоті замість повної гідрації всіх сторінок."
-    - "MDX + manifest/fallback-підхід для feature docs у `ClassesFeatures`."
-    - "Збереження чинних slug і маршрутів під час переносу, щоб не ламати public surface."
+    - "React/Vite SSR для основного продуктового інтерфейсу."
+    - "Контентні knowledge-секції з окремим delivery-path для довідкових сторінок."
+    - "Гнучка контентна структура для classes/species/features."
+    - "Окремий API-контур для auth, comments, notifications і профільних сценаріїв."
   en:
-    - "A hybrid model: React/Vite SSR for the product UI, Astro for public knowledge routes."
-    - "Dedicated `client:visible` islands in the pilot instead of hydrating every public page."
-    - "An MDX plus manifest/fallback approach for feature docs in `ClassesFeatures`."
-    - "Existing slugs and routes are preserved during migration to avoid breaking the public surface."
+    - "React/Vite SSR for the main product interface."
+    - "Knowledge sections with a separate delivery path for reference pages."
+    - "A flexible content structure for classes, species, and features."
+    - "A dedicated API layer for auth, comments, notifications, and profile flows."
 delivery:
   uk:
-    - "PWA-поведінка і build-процес для React/Vite frontend."
-    - "Окремий `dnd-astro-pilot` як безпечний майданчик для перевірки нової delivery-моделі."
-    - "Backend API живе окремо через Django/DRF/JWT/Docker/Fly.io flow."
+    - "PWA-поведінка і build-flow для клієнтського застосунку."
+    - "Окремий маршрут розвитку для knowledge-секцій без переписування всього продукту."
+    - "Backend delivery через Django/DRF/JWT/Docker/Fly.io."
   en:
-    - "PWA behavior and build flow for the main React/Vite frontend."
-    - "A separate `dnd-astro-pilot` as a safe environment for validating the new delivery model."
-    - "The backend API runs independently through a Django/DRF/JWT/Docker/Fly.io flow."
+    - "PWA behavior and build flow for the client application."
+    - "A separate evolution path for knowledge sections without rewriting the whole product."
+    - "Backend delivery through Django/DRF/JWT/Docker/Fly.io."
 impact:
   uk:
-    - "Проєкт еволюціонує без великого risky-rewrite, бо кожен шар отримує власну роль."
-    - "Knowledge-секції отримують шлях до легших статичних маршрутів і нижчої вартості гідрації."
-    - "MDX-контент уже стає редакторським активом, а не побічним продуктом UI-коду."
+    - "Довідник масштабується як продукт, а не як набір розрізнених сторінок."
+    - "Контент, UI і data-contracts розділені по ролях і не злипаються в один шар."
+    - "Проєкт можна розвивати по частинах без великого risky rewrite."
   en:
-    - "The project can evolve without a large risky rewrite because each layer gets a clearer role."
-    - "Knowledge sections now have a path toward lighter static routes and lower hydration cost."
-    - "MDX content is already becoming an editorial asset instead of a side effect of UI code."
+    - "The guide scales as a product, not as a loose set of pages."
+    - "Content, UI, and data contracts stay separated by responsibility."
+    - "The project can evolve in slices without a large risky rewrite."
 caseStudySlug: "dnd-codex-guide"
 codeLanguage: "ts"
 codeSnippet: |
-  const featureModules = import.meta.glob(
-    "../../../../dnd/src/content/ClassesFeatures/**/*.mdx"
-  );
-
-  const manifestModules = {
-    ...import.meta.glob("../../../../dnd/src/content/ClassesFeatures/manifest.ts"),
-    ...import.meta.glob("../../../../dnd/src/content/ClassesFeatures/manifest.js"),
-    ...import.meta.glob("../../../../dnd/src/content/ClassesFeatures/manifest.json"),
-  };
+  export const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+        refetchOnWindowFocus: true,
+      },
+    },
+  });
 ---

@@ -78,15 +78,15 @@ export const pageCopy: Record<Lang, PageCopy> = {
 		},
 		home: {
 			eyebrow: 'Command Hub',
-			title: 'Кібердека резюме: окремі вузли замість однієї довгої сторінки',
+			title: 'Інтерактивне резюме фронтенд-розробника',
 			summary:
-				'Головний екран став навігаційним вузлом. Кожен розділ відкривається як окрема сторінка з власним фокусом, 3D-фоном, glitch-переходами та окремим набором взаємодій.',
+				'Окремі сторінки для навичок, досвіду, проєктів, асетів і контактів. Швидкий маршрут до потрібного блоку без довгої стрічки й без зайвих пояснень про сам формат сайту.',
 			node: 'NODE // HOME-00',
 			modulesEyebrow: 'Точки доступу',
 			modulesTitle: 'Доступні модулі системи',
 			modulesSummary:
-				'Перемикайся між технічними вузлами як у внутрішньоігровому інтерфейсі: стек, досвід, production-кейси, асети й контактний модуль.',
-			moduleAction: 'Відкрити вузол',
+				'Стек, досвід, кейси, асети й контакти винесені в окремі розділи, щоб їх можна було дивитися без зайвого шуму.',
+			moduleAction: 'Відкрити розділ',
 			moduleCards: {
 				skills: {
 					title: 'Навички',
@@ -200,15 +200,15 @@ export const pageCopy: Record<Lang, PageCopy> = {
 		},
 		home: {
 			eyebrow: 'Command Hub',
-			title: 'Resume cyberdeck: each section becomes its own focused page',
+			title: 'Interactive frontend resume',
 			summary:
-				'The landing screen now works like a command hub. Each section opens as a dedicated page with its own focus, 3D background layer, glitch transitions, and page-specific interactions.',
+				'Separate pages for skills, experience, projects, assets, and contact. A faster route to the relevant section without turning the top banner into a changelog.',
 			node: 'NODE // HOME-00',
 			modulesEyebrow: 'Access Nodes',
 			modulesTitle: 'Available system modules',
 			modulesSummary:
-				'Switch between technical nodes like an in-game interface: stack, experience, production case studies, assets, and contact endpoint.',
-			moduleAction: 'Access node',
+				'Stack, experience, projects, assets, and contact live in separate sections so each one can stay focused.',
+			moduleAction: 'Open section',
 			moduleCards: {
 				skills: { title: 'Skills', summary: 'Technology stack, tooling, infrastructure, and the areas where I am strongest in frontend work.', node: 'NODE // SKL-11' },
 				experience: { title: 'Experience', summary: 'A timeline of real work: product building, SSR, caching strategy, and Unity foundation.', node: 'NODE // EXP-21' },
