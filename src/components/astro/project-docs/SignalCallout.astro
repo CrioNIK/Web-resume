@@ -1,0 +1,17 @@
+---
+interface Props {
+	title: string;
+	eyebrow?: string;
+	tone?: 'accent' | 'cyan' | 'amber';
+}
+
+const { title, eyebrow, tone = 'accent' } = Astro.props;
+---
+
+<section class:list={['signal-callout', `signal-callout--${tone}`]}>
+	{eyebrow && <p class="signal-callout__eyebrow">{eyebrow}</p>}
+	<div class="signal-callout__title">{title}</div>
+	<div class="signal-callout__body">
+		<slot />
+	</div>
+</section>

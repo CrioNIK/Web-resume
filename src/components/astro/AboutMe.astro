@@ -3,16 +3,21 @@ import type { SiteCopy } from '../../i18n/siteCopy';
 
 interface Props {
 	about: SiteCopy['about'];
+	showHeading?: boolean;
 }
 
-const { about } = Astro.props;
+const { about, showHeading = true } = Astro.props;
 ---
 
 <section class="section-shell about-flow" id="about">
-	<div class="section-heading about-block">
-		<p class="section-eyebrow">{about.eyebrow}</p>
-		<h2>{about.title}</h2>
-	</div>
+	{
+		showHeading && (
+			<div class="section-heading about-block">
+				<p class="section-eyebrow">{about.eyebrow}</p>
+				<h2>{about.title}</h2>
+			</div>
+		)
+	}
 	<div class="about-grid">
 		{
 			about.cards.map((card) => (

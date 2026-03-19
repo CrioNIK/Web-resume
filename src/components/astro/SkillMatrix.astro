@@ -3,16 +3,21 @@ import type { SiteCopy } from '../../i18n/siteCopy';
 
 interface Props {
 	skills: SiteCopy['skills'];
+	showHeading?: boolean;
 }
 
-const { skills } = Astro.props;
+const { skills, showHeading = true } = Astro.props;
 ---
 
 <section class="section-shell" id="skills">
-	<div class="section-heading">
-		<p class="section-eyebrow">{skills.eyebrow}</p>
-		<h2>{skills.title}</h2>
-	</div>
+	{
+		showHeading && (
+			<div class="section-heading">
+				<p class="section-eyebrow">{skills.eyebrow}</p>
+				<h2>{skills.title}</h2>
+			</div>
+		)
+	}
 	<div class="skill-matrix">
 		{
 			skills.groups.map((group) => (

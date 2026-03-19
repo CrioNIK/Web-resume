@@ -100,9 +100,9 @@ const sharedSkillItems = {
 export const siteCopy: Record<Lang, SiteCopy> = {
 	uk: {
 		meta: {
-			title: 'Батурін Микита | Middle Frontend Developer (React / Next.js)',
+			title: 'Батурін Микита | Frontend Developer (React / Next.js)',
 			description:
-				'Інтерактивне веб-резюме Middle Frontend Developer з акцентом на React, Next.js, TypeScript, PWA, SSR та продуктивний UI/UX.'
+				'Інтерактивне веб-резюме Frontend Developer з акцентом на React, Next.js, TypeScript, PWA, SSR та продуктивний UI/UX.'
 		},
 		brandMeta: 'Frontend Engineer',
 		navigationLabel: 'Головна навігація',
@@ -119,7 +119,7 @@ export const siteCopy: Record<Lang, SiteCopy> = {
 			en: 'Англійська'
 		},
 		hero: {
-			eyebrow: 'Middle Frontend Developer (React / Next.js)',
+			eyebrow: 'Frontend Developer (React / Next.js)',
 			name: 'Батурін Микита',
 			summary:
 				'Frontend розробник, який створює складні веб-застосунки з фокусом на швидкодію, плавну взаємодію та архітектуру, що масштабується. Закриваю повний цикл від системного дизайну до production-релізу.',
@@ -219,9 +219,9 @@ export const siteCopy: Record<Lang, SiteCopy> = {
 	},
 	en: {
 		meta: {
-			title: 'Mykyta Baturin | Middle Frontend Developer (React / Next.js)',
+			title: 'Mykyta Baturin | Frontend Developer (React / Next.js)',
 			description:
-				'Interactive web resume for a Middle Frontend Developer focused on React, Next.js, TypeScript, PWA, SSR, and polished UX motion.'
+				'Interactive web resume for a Frontend Developer focused on React, Next.js, TypeScript, PWA, SSR, and polished UX motion.'
 		},
 		brandMeta: 'Frontend Engineer',
 		navigationLabel: 'Primary navigation',
@@ -238,7 +238,7 @@ export const siteCopy: Record<Lang, SiteCopy> = {
 			en: 'English'
 		},
 		hero: {
-			eyebrow: 'Middle Frontend Developer (React / Next.js)',
+			eyebrow: 'Frontend Developer (React / Next.js)',
 			name: 'Mykyta Baturin',
 			summary:
 				'Frontend developer focused on complex web applications with strong performance, smooth interaction, and scalable architecture. I cover the full cycle from system design to production release.',

@@ -6,12 +6,12 @@ const localizedString = z.object({
 });
 
 const localizedStringList = z.object({
-	uk: z.array(z.string()).min(2).max(5),
-	en: z.array(z.string()).min(2).max(5)
+	uk: z.array(z.string()).min(2),
+	en: z.array(z.string()).min(2)
 });
 
 const stringOrLocalizedString = z.union([z.string(), localizedString]);
-const stringArrayOrLocalizedStringList = z.union([z.array(z.string()).min(2).max(5), localizedStringList]);
+const stringArrayOrLocalizedStringList = z.union([z.array(z.string()).min(2), localizedStringList]);
 
 const projects = defineCollection({
 	type: 'content',
@@ -24,10 +24,25 @@ const projects = defineCollection({
 		repo: z.string().url().optional(),
 		tags: z.array(z.string()).min(1),
 		highlight: stringArrayOrLocalizedStringList,
-		accent: z.string().regex(/^#([0-9a-fA-F]{6})$/)
+		accent: z.string().regex(/^#([0-9a-fA-F]{6})$/),
+		role: stringOrLocalizedString.optional(),
+		status: stringOrLocalizedString.optional(),
+		overview: stringOrLocalizedString.optional(),
+		responsibilities: stringArrayOrLocalizedStringList.optional(),
+		architecture: stringArrayOrLocalizedStringList.optional(),
+		delivery: stringArrayOrLocalizedStringList.optional(),
+		impact: stringArrayOrLocalizedStringList.optional(),
+		caseStudySlug: z.string().optional(),
+		codeLanguage: z.string().optional(),
+		codeSnippet: z.string().optional()
 	})
 });
 
+const projectDocs = defineCollection({
+	type: 'content'
+});
+
 export const collections = {
-	projects
+	projects,
+	projectDocs
 };

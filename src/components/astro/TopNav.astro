@@ -1,25 +1,30 @@
 ﻿---
-import type { Lang, NavItem } from '../../i18n/siteCopy';
+import { buildPagePath, type PageKey } from '../../i18n/pageCopy';
+import type { Lang } from '../../i18n/siteCopy';
+import type { NavRouteItem } from '../../lib/routes';
 
 interface Props {
-	navItems: NavItem[];
+	navItems: NavRouteItem[];
 	brandMeta: string;
+	homeHref: string;
 	currentLang: Lang;
+	currentPage: PageKey;
 	navigationLabel: string;
 	languageLabel: string;
 	languageNames: Record<Lang, string>;
+	languageLinks?: Partial<Record<Lang, string>>;
 }
 
-const { navItems, brandMeta, currentLang, navigationLabel, languageLabel, languageNames } = Astro.props;
+const { navItems, brandMeta, homeHref, currentLang, currentPage, navigationLabel, languageLabel, languageNames, languageLinks = {} } = Astro.props;
 
-const languageLinks = [
-	{ code: 'uk' as const, short: 'UA', href: '/uk/' },
-	{ code: 'en' as const, short: 'EN', href: '/en/' }
+const languageOptions = [
+	{ code: 'uk' as const, short: 'UA', href: languageLinks.uk ?? buildPagePath('uk', currentPage) },
+	{ code: 'en' as const, short: 'EN', href: languageLinks.en ?? buildPagePath('en', currentPage) }
 ];
 ---
 
 <header class="top-nav">
-	<a href={`/${currentLang}/#top`} class="brand-mark">
+	<a href={homeHref} class="brand-mark" data-route-link="true" data-sound-hover="true">
 		<span class="brand-mark__id">MB</span>
 		<span class="brand-mark__meta">{brandMeta}</span>
 	</a>
@@ -29,7 +34,15 @@ const languageLinks = [
 				{
 					navItems.map((item) => (
 						<li>
-							<a href={item.href}>{item.label}</a>
+							<a
+								href={item.href}
+								class:list={['top-nav__link', item.key === currentPage && 'is-active']}
+								aria-current={item.key === currentPage ? 'page' : undefined}
+								data-route-link="true"
+								data-sound-hover="true"
+							>
+								{item.label}
+							</a>
 						</li>
 					))
 				}
@@ -39,13 +52,15 @@ const languageLinks = [
 			<span class="lang-switch__label">{languageLabel}</span>
 			<div class="lang-switch__list">
 				{
-					languageLinks.map((item) => (
+					languageOptions.map((item) => (
 						<a
 							href={item.href}
 							class:list={['lang-switch__link', item.code === currentLang && 'is-active']}
 							aria-label={`${languageLabel}: ${languageNames[item.code]}`}
 							aria-current={item.code === currentLang ? 'page' : undefined}
 							data-lang-switch={item.code}
+							data-route-link="true"
+							data-sound-hover="true"
 						>
 							{item.short}
 						</a>

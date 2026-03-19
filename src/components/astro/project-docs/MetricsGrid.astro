@@ -1,0 +1,25 @@
+---
+interface MetricItem {
+	label: string;
+	value: string;
+	note?: string;
+}
+
+interface Props {
+	items: MetricItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="metrics-grid">
+	{
+		items.map((item) => (
+			<article class="metrics-card">
+				<p class="metrics-card__label">{item.label}</p>
+				<strong class="metrics-card__value">{item.value}</strong>
+				{item.note && <p class="metrics-card__note">{item.note}</p>}
+			</article>
+		))
+	}
+</div>

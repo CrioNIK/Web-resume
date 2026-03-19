@@ -1,5 +1,7 @@
 ﻿---
+import type { PageKey } from '../i18n/pageCopy';
 import type { Lang } from '../i18n/siteCopy';
+import HudBackdropScene from '../components/react/HudBackdropScene';
 import '../styles/global.css';
 
 interface AlternateLink {
@@ -12,14 +14,16 @@ interface Props {
 	description?: string;
 	canonical?: string;
 	lang?: Lang;
+	pageKey?: PageKey;
 	alternates?: AlternateLink[];
 }
 
 const {
-	title = 'Mykyta Baturin | Middle Frontend Developer (React / Next.js)',
-	description = 'Interactive web resume for a Middle Frontend Developer focused on React, Next.js, TypeScript, PWA, SSR, and polished UX motion.',
+	title = 'Mykyta Baturin | Frontend Developer (React / Next.js)',
+	description = 'Interactive web resume for a Frontend Developer focused on React, Next.js, TypeScript, PWA, SSR, and polished UX motion.',
 	canonical,
 	lang = 'uk',
+	pageKey = 'home',
 	alternates = []
 } = Astro.props;
 
@@ -27,12 +31,13 @@ const pageUrl = canonical ?? Astro.url?.href ?? 'http://localhost/';
 const locale = lang === 'uk' ? 'uk_UA' : 'en_US';
 const personName = lang === 'uk' ? 'Батурін Микита' : 'Mykyta Baturin';
 const storageKey = 'resume-lang';
+const audioStateKey = 'resume-audio-primed';
 
 const personSchema = {
 	'@context': 'https://schema.org',
 	'@type': 'Person',
 	name: personName,
-	jobTitle: 'Middle Frontend Developer (React / Next.js)',
+	jobTitle: 'Frontend Developer (React / Next.js)',
 	email: 'mailto:coldboycrio314@gmail.com',
 	telephone: '+380953147381',
 	url: pageUrl,
@@ -43,16 +48,7 @@ const personSchema = {
 		addressCountry: 'UA'
 	},
 	sameAs: ['https://www.dnd-codex.guide/'],
-	knowsAbout: [
-		'React',
-		'Next.js',
-		'TypeScript',
-		'TanStack Query',
-		'Tailwind CSS',
-		'Framer Motion',
-		'PWA',
-		'SSR'
-	]
+	knowsAbout: ['React', 'Next.js', 'TypeScript', 'TanStack Query', 'Tailwind CSS', 'Framer Motion', 'PWA', 'SSR']
 };
 ---
 
@@ -67,14 +63,8 @@ const personSchema = {
 		<link rel="canonical" href={pageUrl} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
-		{
-			alternates.map((alternate) => <link rel="alternate" hrefLang={alternate.lang} href={alternate.href} />)
-		}
-		{
-			alternates.length > 0 && (
-				<link rel="alternate" hrefLang="x-default" href={alternates.find((item) => item.lang === 'en')?.href ?? alternates[0].href} />
-			)
-		}
+		{alternates.map((alternate) => <link rel="alternate" hrefLang={alternate.lang} href={alternate.href} />)}
+		{alternates.length > 0 && <link rel="alternate" hrefLang="x-default" href={alternates.find((item) => item.lang === 'en')?.href ?? alternates[0].href} />}
 
 		<meta property="og:type" content="website" />
 		<meta property="og:locale" content={locale} />
@@ -87,15 +77,21 @@ const personSchema = {
 
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&family=Russo+One&display=swap"
-			rel="stylesheet"
-		/>
+		<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&family=Russo+One&display=swap" rel="stylesheet" />
 
 		<title>{title}</title>
 		<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
-		<script is:inline define:vars={{ lang, storageKey }}>
+		<script is:inline define:vars={{ lang, storageKey, audioStateKey }}>
 			(() => {
+				const soundMap = {
+					boot: '/sounds/ui_main_menu_loop_start.wav',
+					hover: '/sounds/ui_menu_hover.wav',
+					confirm: '/sounds/ui_main_menu_cc_confirmation.wav',
+					route: '/sounds/ui_main_menu_open_tab.wav',
+					'panel-open': '/sounds/ui_main_menu_cc_confirmation_screen_open.wav',
+					'panel-close': '/sounds/ui_main_menu_cc_confirmation_screen_close.wav'
+				};
+
 				const persistLanguage = (value) => {
 					try {
 						window.localStorage.setItem(storageKey, value);
@@ -104,32 +100,229 @@ const personSchema = {
 					}
 				};
 
+				const readAudioPrimed = () => {
+					try {
+						return (
+							window.localStorage.getItem(audioStateKey) === '1' ||
+							window.sessionStorage.getItem(audioStateKey) === '1'
+						);
+					} catch {
+						return false;
+					}
+				};
+
+				const persistAudioPrimed = () => {
+					try {
+						window.localStorage.setItem(audioStateKey, '1');
+					} catch {
+						// Ignore storage errors.
+					}
+
+					try {
+						window.sessionStorage.setItem(audioStateKey, '1');
+					} catch {
+						// Ignore storage errors.
+					}
+				};
+
 				persistLanguage(lang);
 
-				const bindSwitches = () => {
-					document.querySelectorAll('[data-lang-switch]').forEach((element) => {
-						element.addEventListener(
-							'click',
-							() => {
-								const nextLang = element.getAttribute('data-lang-switch');
-								if (nextLang === 'uk' || nextLang === 'en') {
-									persistLanguage(nextLang);
-								}
-							},
-							{ passive: true }
-						);
+				const ensureRuntime = () => {
+					if (window.__resumeHudRuntime) {
+						return window.__resumeHudRuntime;
+					}
+
+					const cache = new Map();
+					let unlocked = readAudioPrimed();
+					let hoverTime = 0;
+					let bootQueued = false;
+
+					const getAudio = (key) => {
+						if (!soundMap[key]) return null;
+						if (!cache.has(key)) {
+							const audio = new Audio(soundMap[key]);
+							audio.preload = 'auto';
+							cache.set(key, audio);
+						}
+						return cache.get(key);
+					};
+
+					const preloadAll = () => {
+						Object.keys(soundMap).forEach((key) => {
+							getAudio(key);
+						});
+					};
+
+					const play = (key, volume = 0.6) => {
+						if (!soundMap[key] || !unlocked) {
+							return Promise.resolve(false);
+						}
+
+						const audio = getAudio(key);
+						if (!audio) return Promise.resolve(false);
+
+						try {
+							const clone = audio.cloneNode(true);
+							clone.volume = volume;
+							const playback = clone.play();
+							if (playback && typeof playback.then === 'function') {
+								return playback
+									.then(() => true)
+									.catch(() => false);
+							}
+
+							return Promise.resolve(true);
+						} catch {
+							return Promise.resolve(false);
+						}
+					};
+
+					const unlock = ({ silent = false, forceBoot = false } = {}) => {
+						const wasUnlocked = unlocked;
+						unlocked = true;
+						persistAudioPrimed();
+						preloadAll();
+
+						if (!silent && (!wasUnlocked || forceBoot)) {
+							void play('boot', 0.42);
+						}
+					};
+
+					const restore = () => {
+						if (!readAudioPrimed()) {
+							return;
+						}
+
+						unlocked = true;
+						preloadAll();
+					};
+
+					const boot = () => {
+						if (bootQueued || !readAudioPrimed()) {
+							return;
+						}
+
+						bootQueued = true;
+						restore();
+						void play('boot', 0.42).then((didPlay) => {
+							if (!didPlay) {
+								bootQueued = false;
+							}
+						});
+					};
+
+					const hover = () => {
+						if (!unlocked) return;
+						const now = performance.now();
+						if (now - hoverTime < 75) return;
+						hoverTime = now;
+						void play('hover', 0.34);
+					};
+
+					window.__resumeHudRuntime = { play, unlock, hover, restore, boot };
+					return window.__resumeHudRuntime;
+				};
+
+				const runtime = ensureRuntime();
+
+				const bindHoverSounds = () => {
+					document.querySelectorAll('[data-sound-hover]').forEach((element) => {
+						if (element.dataset.soundHoverBound === 'true') return;
+						element.dataset.soundHoverBound = 'true';
+						element.addEventListener('pointerenter', () => runtime.hover(), { passive: true });
+					});
+				};
+
+				const handleRouteClick = (event) => {
+					const target = event.target;
+					if (!(target instanceof HTMLElement)) return;
+					const link = target.closest('a[data-route-link="true"]');
+					if (!link) return;
+					if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+					if (link.target === '_blank' || link.hasAttribute('download')) return;
+
+					const href = link.getAttribute('href');
+					if (!href) return;
+					const nextUrl = new URL(href, window.location.href);
+					if (nextUrl.origin !== window.location.origin || nextUrl.href === window.location.href) return;
+
+					event.preventDefault();
+					runtime.unlock();
+					void runtime.play('route', 0.7);
+					document.body.classList.remove('is-entering');
+					document.body.classList.add('is-routing');
+					window.setTimeout(() => {
+						window.location.href = `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`;
+					}, 320);
+				};
+
+				const handleClickSound = (event) => {
+					const target = event.target;
+					if (!(target instanceof HTMLElement)) return;
+					const node = target.closest('[data-sound-click]');
+					if (!node) return;
+					const sound = node.getAttribute('data-sound-click');
+					if (sound === 'confirm' || sound === 'panel-open' || sound === 'panel-close' || sound === 'route') {
+						runtime.unlock();
+						void runtime.play(sound, 0.62);
+					}
+				};
+
+				window.addEventListener('hud-sound', (event) => {
+					const sound = typeof event.detail === 'string' ? event.detail : '';
+					if (sound === 'hover') {
+						runtime.hover();
+						return;
+					}
+
+					if (sound === 'confirm' || sound === 'route' || sound === 'panel-open' || sound === 'panel-close') {
+						runtime.unlock();
+						void runtime.play(sound, 0.62);
+					}
+				});
+
+				document.addEventListener('click', handleRouteClick);
+				document.addEventListener('click', handleClickSound);
+				window.addEventListener('pointerdown', runtime.unlock, { once: true, passive: true });
+				window.addEventListener('keydown', runtime.unlock, { once: true });
+				document.addEventListener('visibilitychange', () => {
+					if (!document.hidden) {
+						runtime.restore();
+					}
+				});
+				window.addEventListener('focus', runtime.restore);
+				window.addEventListener('pageshow', () => {
+					runtime.restore();
+					runtime.boot();
+				});
+
+				const startPage = () => {
+					bindHoverSounds();
+					runtime.restore();
+					runtime.boot();
+					requestAnimationFrame(() => {
+						document.body.classList.remove('is-booting');
+						document.body.classList.add('is-entering');
+						window.setTimeout(() => document.body.classList.remove('is-entering'), 860);
 					});
 				};
 
 				if (document.readyState === 'loading') {
-					document.addEventListener('DOMContentLoaded', bindSwitches, { once: true });
+					document.addEventListener('DOMContentLoaded', startPage, { once: true });
 				} else {
-					bindSwitches();
+					startPage();
 				}
 			})();
 		</script>
 	</head>
-	<body>
+	<body class={`hud-body is-booting page-${pageKey}`} data-page={pageKey}>
+		<div class="page-transition" aria-hidden="true">
+			<div class="page-transition__bar"></div>
+			<div class="page-transition__frame"></div>
+		</div>
+		<div class="hud-backdrop-shell" aria-hidden="true">
+			<HudBackdropScene client:only="react" />
+		</div>
 		<div class="grain-overlay" aria-hidden="true"></div>
 		<div class="scanline-overlay" aria-hidden="true"></div>
 		<div class="vignette-overlay" aria-hidden="true"></div>

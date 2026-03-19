@@ -1,0 +1,23 @@
+﻿---
+interface Props {
+	eyebrow: string;
+	title: string;
+	summary: string;
+	node: string;
+	signalLabel?: string;
+}
+
+const { eyebrow, title, summary, node, signalLabel = 'LIVE SIGNAL' } = Astro.props;
+---
+
+<section class="page-banner panel">
+	<div class="page-banner__copy">
+		<p class="section-eyebrow">{eyebrow}</p>
+		<h1>{title}</h1>
+		<p class="page-banner__summary">{summary}</p>
+	</div>
+	<div class="page-banner__node">
+		<span>{node}</span>
+		<small>{signalLabel}</small>
+	</div>
+</section>

@@ -1,83 +1,68 @@
-﻿---
-import { getCollection } from 'astro:content';
-import AboutMe from '../../components/astro/AboutMe.astro';
-import ContactPanel from '../../components/astro/ContactPanel.astro';
-import ExperienceTimeline from '../../components/astro/ExperienceTimeline.astro';
-import HeroSection from '../../components/astro/HeroSection.astro';
-import ProjectsSection from '../../components/astro/ProjectsSection.astro';
-import SkillMatrix from '../../components/astro/SkillMatrix.astro';
+---
+import HeroIntro from '../../components/astro/HeroIntro.astro';
+import HomeModules from '../../components/astro/HomeModules.astro';
+import PageBanner from '../../components/astro/PageBanner.astro';
 import TopNav from '../../components/astro/TopNav.astro';
-import type { ProjectCardData } from '../../components/react/ProjectCard';
-import { isLang, languages, siteCopy, type Lang } from '../../i18n/siteCopy';
+import { buildPagePath, type NavPageKey } from '../../i18n/pageCopy';
+import { pageCopy } from '../../i18n/pageCopy';
+import { siteCopy } from '../../i18n/siteCopy';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { buildNavRoutes, getAlternates, getStaticLangPaths, resolveLang } from '../../lib/routes';
 
 export function getStaticPaths() {
-	return languages.map((lang) => ({ params: { lang } }));
+	return getStaticLangPaths();
 }
 
-function pickLocalizedValue(value: string | { uk: string; en: string }, lang: Lang) {
-	if (typeof value === 'string') {
-		return value;
-	}
-
-	return value[lang] ?? value.en ?? value.uk;
-}
-
-function pickLocalizedList(value: string[] | { uk: string[]; en: string[] }, lang: Lang) {
-	if (Array.isArray(value)) {
-		return value;
-	}
-
-	return value[lang] ?? value.en ?? value.uk;
-}
-
-const requestedLang = Astro.params.lang ?? 'en';
-
-if (!isLang(requestedLang)) {
-	throw new Error(`Unsupported language route: ${requestedLang}`);
-}
-
-const lang: Lang = requestedLang;
+const lang = resolveLang(Astro.params.lang);
 const copy = siteCopy[lang];
-const projectEntries = await getCollection('projects');
+const page = pageCopy[lang];
 const origin = Astro.site ?? Astro.url;
-
-const projects: ProjectCardData[] = projectEntries
-	.sort((a, b) => a.data.order - b.data.order)
-	.map((entry) => ({
-		slug: entry.slug,
-		title: pickLocalizedValue(entry.data.title, lang),
-		summary: pickLocalizedValue(entry.data.summary, lang),
-		period: pickLocalizedValue(entry.data.period, lang),
-		url: entry.data.url,
-		repo: entry.data.repo,
-		tags: entry.data.tags,
-		highlight: pickLocalizedList(entry.data.highlight, lang),
-		accent: entry.data.accent
-	}));
-
-const canonical = new URL(`/${lang}/`, origin).href;
-const alternates = languages.map((locale) => ({
-	lang: locale,
-	href: new URL(`/${locale}/`, origin).href
+const canonical = new URL(buildPagePath(lang, 'home'), origin).href;
+const alternates = getAlternates(origin, 'home');
+const navItems = buildNavRoutes(lang, page.nav);
+const homeHref = buildPagePath(lang, 'home');
+const modules = navItems.map((item) => ({
+	key: item.key as NavPageKey,
+	href: item.href,
+	...page.home.moduleCards[item.key]
 }));
 ---
 
-<BaseLayout title={copy.meta.title} description={copy.meta.description} canonical={canonical} lang={lang} alternates={alternates}>
+<BaseLayout
+	title={copy.meta.title}
+	description={copy.meta.description}
+	canonical={canonical}
+	lang={lang}
+	alternates={alternates}
+	pageKey="home"
+>
 	<main id="top">
 		<TopNav
-			navItems={copy.navItems}
+			navItems={navItems}
 			brandMeta={copy.brandMeta}
+			homeHref={homeHref}
 			currentLang={lang}
+			currentPage="home"
 			navigationLabel={copy.navigationLabel}
 			languageLabel={copy.languageLabel}
 			languageNames={copy.languageNames}
 		/>
-		<HeroSection hero={copy.hero} />
-		<SkillMatrix skills={copy.skills} />
-		<ExperienceTimeline experience={copy.experience} />
-		<ProjectsSection projects={projects} copy={copy.projects} />
-		<AboutMe about={copy.about} />
-		<ContactPanel contact={copy.contact} />
+		<PageBanner
+			eyebrow={page.home.eyebrow}
+			title={page.home.title}
+			summary={page.home.summary}
+			node={page.home.node}
+			signalLabel={page.signalLabel}
+		/>
+		<section class="section-shell home-profile-shell">
+			<HeroIntro hero={copy.hero} />
+		</section>
+		<HomeModules
+			eyebrow={page.home.modulesEyebrow}
+			title={page.home.modulesTitle}
+			summary={page.home.modulesSummary}
+			actionLabel={page.home.moduleAction}
+			modules={modules}
+		/>
 	</main>
 </BaseLayout>

@@ -1,0 +1,222 @@
+---
+import PageBanner from '../../../components/astro/PageBanner.astro';
+import TopNav from '../../../components/astro/TopNav.astro';
+import { buildPagePath } from '../../../i18n/pageCopy';
+import { pageCopy } from '../../../i18n/pageCopy';
+import { languages, type Lang, siteCopy } from '../../../i18n/siteCopy';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { buildProjectDocPath, getProjectDocAlternates } from '../../../lib/projectDocs';
+import { getLocalizedProjects } from '../../../lib/projects';
+import { buildNavRoutes, resolveLang } from '../../../lib/routes';
+import '../../../styles/project-docs.css';
+
+type Heading = {
+	depth: number;
+	slug: string;
+	text: string;
+};
+
+type ProjectDocFrontmatter = {
+	slug?: string;
+	projectSlug?: string;
+	title?: string;
+	summary?: string;
+	eyebrow?: string;
+	node?: string;
+	teaser?: string;
+};
+
+type ProjectDocModule = ProjectDocFrontmatter & {
+	default: any;
+	frontmatter?: ProjectDocFrontmatter;
+	getHeadings?: () => Promise<Heading[]>;
+};
+
+const projectDocModules = import.meta.glob('../../../content/projectDocs/**/*.mdx') as Record<
+	string,
+	() => Promise<ProjectDocModule>
+>;
+
+export async function getStaticPaths() {
+	const projectDocModules = import.meta.glob('../../../content/projectDocs/**/*.mdx') as Record<
+		string,
+		() => Promise<ProjectDocModule>
+	>;
+
+	return Object.keys(projectDocModules)
+		.map((path) => path.match(/projectDocs\/([^/]+)\/([^/]+)\.mdx$/))
+		.filter((match): match is RegExpMatchArray => Boolean(match))
+		.map((match) => ({
+			params: {
+				lang: match[1],
+				slug: match[2]
+			}
+		}));
+}
+
+const lang = resolveLang(Astro.params.lang);
+const slug = Astro.params.slug ?? '';
+const docLoader = projectDocModules[`../../../content/projectDocs/${lang}/${slug}.mdx`];
+const docModule = docLoader ? await docLoader() : null;
+
+if (!docModule) {
+	throw new Error(`Unknown project doc: ${lang}/${slug}`);
+}
+
+const doc = {
+	slug: docModule.slug ?? docModule.frontmatter?.slug ?? slug,
+	projectSlug: docModule.projectSlug ?? docModule.frontmatter?.projectSlug ?? '',
+	title: docModule.title ?? docModule.frontmatter?.title ?? slug,
+	summary: docModule.summary ?? docModule.frontmatter?.summary ?? '',
+	eyebrow: docModule.eyebrow ?? docModule.frontmatter?.eyebrow ?? 'Case Study',
+	node: docModule.node ?? docModule.frontmatter?.node ?? 'NODE // DOC',
+	teaser: docModule.teaser ?? docModule.frontmatter?.teaser
+};
+const Content = docModule.default;
+const headings = docModule.getHeadings ? await docModule.getHeadings() : [];
+const copy = siteCopy[lang];
+const page = pageCopy[lang];
+const origin = Astro.site ?? Astro.url;
+const canonical = new URL(buildProjectDocPath(lang, slug), origin).href;
+const alternates = getProjectDocAlternates(origin, slug);
+const navItems = buildNavRoutes(lang, page.nav);
+const homeHref = buildPagePath(lang, 'home');
+const languageLinks = Object.fromEntries(
+	languages.map((entryLang) => [entryLang, buildProjectDocPath(entryLang, slug)])
+) as Record<Lang, string>;
+const projects = await getLocalizedProjects(lang);
+const project = projects.find((entry) => entry.slug === doc.projectSlug) ?? null;
+const toc = headings.filter((entry) => entry.depth >= 2 && entry.depth <= 3);
+
+const labels =
+	lang === 'uk'
+		? {
+				backToProjects: 'Повернутись до workstation',
+				overview: 'Короткий статус',
+				role: 'Роль',
+				status: 'Статус',
+				period: 'Період',
+				stack: 'Стек',
+				contents: 'Навігація по досьє',
+				openProject: 'Відкрити live',
+				openRepository: 'Репозиторій'
+			}
+		: {
+				backToProjects: 'Back to workstation',
+				overview: 'Status snapshot',
+				role: 'Role',
+				status: 'Status',
+				period: 'Period',
+				stack: 'Stack',
+				contents: 'Dossier navigation',
+				openProject: 'Open live',
+				openRepository: 'Repository'
+			};
+---
+
+<BaseLayout
+	title={`${copy.hero.name} | ${doc.title}`}
+	description={doc.summary}
+	canonical={canonical}
+	lang={lang}
+	alternates={alternates}
+	pageKey="projects"
+>
+	<main id="top">
+		<TopNav
+			navItems={navItems}
+			brandMeta={copy.brandMeta}
+			homeHref={homeHref}
+			currentLang={lang}
+			currentPage="projects"
+			navigationLabel={copy.navigationLabel}
+			languageLabel={copy.languageLabel}
+			languageNames={copy.languageNames}
+			languageLinks={languageLinks}
+		/>
+
+		<PageBanner
+			eyebrow={doc.eyebrow}
+			title={doc.title}
+			summary={doc.summary}
+			node={doc.node}
+			signalLabel={page.signalLabel}
+		/>
+
+		<section class="section-shell project-doc-shell">
+			<aside class="project-doc-meta">
+				<div class="project-doc-meta__lead">
+					<p class="project-doc-meta__eyebrow">{labels.overview}</p>
+					<p class="project-doc-meta__summary">{project?.summary ?? doc.data.summary}</p>
+				</div>
+
+				{doc.teaser && <p class="project-doc-meta__teaser">{doc.teaser}</p>}
+
+				{project && (
+					<div class="project-doc-meta__grid">
+						<div class="project-doc-meta__badge">
+							<span>{labels.role}</span>
+							<strong>{project.role}</strong>
+						</div>
+						<div class="project-doc-meta__badge">
+							<span>{labels.status}</span>
+							<strong>{project.status}</strong>
+						</div>
+						<div class="project-doc-meta__badge">
+							<span>{labels.period}</span>
+							<strong>{project.period}</strong>
+						</div>
+						<div class="project-doc-meta__badge">
+							<span>{labels.stack}</span>
+							<strong>{project.tags.slice(0, 2).join(' / ')}</strong>
+						</div>
+					</div>
+				)}
+
+				<div class="project-doc-meta__actions">
+					<a href={buildPagePath(lang, 'projects')} class="button button--ghost" data-route-link="true" data-sound-hover="true">
+						{labels.backToProjects}
+					</a>
+					{project && (
+						<a href={project.url} target="_blank" rel="noreferrer" class="button button--primary" data-sound-hover="true">
+							{labels.openProject}
+						</a>
+					)}
+					{project?.repo && (
+						<a href={project.repo} target="_blank" rel="noreferrer" class="button button--ghost" data-sound-hover="true">
+							{labels.openRepository}
+						</a>
+					)}
+				</div>
+
+				{project && (
+					<div class="project-doc-meta__tags">
+						<p class="project-doc-meta__title">{labels.stack}</p>
+						<ul class="chip-list">
+							{project.tags.map((tag) => <li>{tag}</li>)}
+						</ul>
+					</div>
+				)}
+
+				{toc.length > 0 && (
+					<nav class="project-doc-meta__toc" aria-label={labels.contents}>
+						<p class="project-doc-meta__toc-title">{labels.contents}</p>
+						<ul>
+							{
+								toc.map((entry) => (
+									<li data-depth={entry.depth}>
+										<a href={`#${entry.slug}`}>{entry.text}</a>
+									</li>
+								))
+							}
+						</ul>
+					</nav>
+				)}
+			</aside>
+
+			<article class="project-doc-article">
+				<Content />
+			</article>
+		</section>
+	</main>
+</BaseLayout>

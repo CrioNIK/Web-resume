@@ -3,20 +3,32 @@ import type { SiteCopy } from '../../i18n/siteCopy';
 
 interface Props {
 	contact: SiteCopy['contact'];
+	showHeading?: boolean;
 }
 
-const { contact } = Astro.props;
+const { contact, showHeading = true } = Astro.props;
 ---
 
 <section class="section-shell" id="contacts">
-	<div class="section-heading">
-		<p class="section-eyebrow">{contact.eyebrow}</p>
-		<h2>{contact.title}</h2>
-	</div>
+	{
+		showHeading && (
+			<div class="section-heading">
+				<p class="section-eyebrow">{contact.eyebrow}</p>
+				<h2>{contact.title}</h2>
+			</div>
+		)
+	}
 	<div class="contact-grid">
 		{
 			contact.items.map((item) => (
-				<a class="panel contact-item" href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel={item.href.startsWith('http') ? 'noreferrer' : undefined}>
+				<a
+					class="panel contact-item"
+					href={item.href}
+					target={item.href.startsWith('http') ? '_blank' : undefined}
+					rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+					data-sound-hover="true"
+					data-sound-click="confirm"
+				>
 					<span>{item.label}</span>
 					<strong>{item.value}</strong>
 				</a>

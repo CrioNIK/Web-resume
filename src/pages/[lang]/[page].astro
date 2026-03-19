@@ -1,0 +1,92 @@
+---
+import AboutMe from '../../components/astro/AboutMe.astro';
+import ContactPanel from '../../components/astro/ContactPanel.astro';
+import ExperienceTimeline from '../../components/astro/ExperienceTimeline.astro';
+import PageBanner from '../../components/astro/PageBanner.astro';
+import SkillMatrix from '../../components/astro/SkillMatrix.astro';
+import TopNav from '../../components/astro/TopNav.astro';
+import AssetsWorkbench from '../../components/react/AssetsWorkbench';
+import ProjectsWorkbench from '../../components/react/ProjectsWorkbench';
+import { getLocalizedAssets } from '../../data/assetsCatalog';
+import { buildPagePath, navPageKeys, type NavPageKey } from '../../i18n/pageCopy';
+import { pageCopy } from '../../i18n/pageCopy';
+import { languages, siteCopy } from '../../i18n/siteCopy';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLocalizedProjects } from '../../lib/projects';
+import { buildNavRoutes, getAlternates, resolveLang } from '../../lib/routes';
+
+export function getStaticPaths() {
+	return languages.flatMap((lang) => navPageKeys.map((page) => ({ params: { lang, page } })));
+}
+
+const lang = resolveLang(Astro.params.lang);
+const requestedPage = Astro.params.page;
+
+if (!requestedPage || !navPageKeys.includes(requestedPage as NavPageKey)) {
+	throw new Error(`Unsupported page route: ${requestedPage}`);
+}
+
+const pageKey = requestedPage as NavPageKey;
+const copy = siteCopy[lang];
+const page = pageCopy[lang];
+const banner = page.pages[pageKey];
+const origin = Astro.site ?? Astro.url;
+const canonical = new URL(buildPagePath(lang, pageKey), origin).href;
+const alternates = getAlternates(origin, pageKey);
+const navItems = buildNavRoutes(lang, page.nav);
+const homeHref = buildPagePath(lang, 'home');
+const metaTitle = `${copy.hero.name} | ${banner.title}`;
+const metaDescription = banner.summary;
+const projects = pageKey === 'projects' ? await getLocalizedProjects(lang) : [];
+const assets = pageKey === 'assets' ? getLocalizedAssets(lang) : [];
+---
+
+<BaseLayout
+	title={metaTitle}
+	description={metaDescription}
+	canonical={canonical}
+	lang={lang}
+	alternates={alternates}
+	pageKey={pageKey}
+>
+	<main id="top">
+		<TopNav
+			navItems={navItems}
+			brandMeta={copy.brandMeta}
+			homeHref={homeHref}
+			currentLang={lang}
+			currentPage={pageKey}
+			navigationLabel={copy.navigationLabel}
+			languageLabel={copy.languageLabel}
+			languageNames={copy.languageNames}
+		/>
+		<PageBanner
+			eyebrow={banner.eyebrow}
+			title={banner.title}
+			summary={banner.summary}
+			node={banner.node}
+			signalLabel={page.signalLabel}
+		/>
+
+		{pageKey === 'skills' && <SkillMatrix skills={copy.skills} showHeading={false} />}
+		{pageKey === 'experience' && <ExperienceTimeline experience={copy.experience} showHeading={false} />}
+		{pageKey === 'about' && <AboutMe about={copy.about} showHeading={false} />}
+		{pageKey === 'contacts' && <ContactPanel contact={copy.contact} showHeading={false} />}
+		{
+			pageKey === 'projects' && (
+				<section class="section-shell section-shell--workbench">
+					<p class="section-note workbench-note">{copy.projects.note}</p>
+					<ProjectsWorkbench client:load projects={projects} labels={page.projectsWorkbench} />
+				</section>
+			)
+		}
+		{
+			pageKey === 'assets' && (
+				<section class="section-shell section-shell--workbench">
+					<p class="section-note workbench-note">{banner.summary}</p>
+					<AssetsWorkbench client:load assets={assets} labels={page.assetsWorkbench} />
+				</section>
+			)
+		}
+	</main>
+</BaseLayout>

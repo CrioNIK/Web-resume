@@ -1,0 +1,25 @@
+---
+interface TileItem {
+	title: string;
+	description: string;
+	meta?: string;
+}
+
+interface Props {
+	items: TileItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="feature-tiles">
+	{
+		items.map((item) => (
+			<article class="feature-tile">
+				{item.meta && <p class="feature-tile__meta">{item.meta}</p>}
+				<h3>{item.title}</h3>
+				<p>{item.description}</p>
+			</article>
+		))
+	}
+</div>

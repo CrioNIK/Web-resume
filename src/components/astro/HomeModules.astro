@@ -1,0 +1,41 @@
+﻿---
+import type { NavPageKey } from '../../i18n/pageCopy';
+
+interface ModuleCard {
+	key: NavPageKey;
+	title: string;
+	summary: string;
+	node: string;
+	href: string;
+}
+
+interface Props {
+	eyebrow: string;
+	title: string;
+	summary: string;
+	actionLabel: string;
+	modules: ModuleCard[];
+}
+
+const { eyebrow, title, summary, actionLabel, modules } = Astro.props;
+---
+
+<section class="section-shell home-modules">
+	<div class="section-heading">
+		<p class="section-eyebrow">{eyebrow}</p>
+		<h2>{title}</h2>
+		<p class="section-note">{summary}</p>
+	</div>
+	<div class="module-grid">
+		{
+			modules.map((module) => (
+				<a class="panel module-card" href={module.href} data-route-link="true" data-sound-hover="true">
+					<p class="module-card__node">{module.node}</p>
+					<h3>{module.title}</h3>
+					<p>{module.summary}</p>
+					<span class="text-link">{actionLabel}</span>
+				</a>
+			))
+		}
+	</div>
+</section>
