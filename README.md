@@ -15,9 +15,10 @@ The previous Astro portfolio was removed and used only as a content donor. Versi
 - **Go 1.26.7** for a privacy-first Vercel pulse API.
 - **WebGPU** for the hero field when supported, with a Canvas 2D fallback and a reduced-motion static mode.
 - **Module Workers** for off-main-thread Rust/WASM compute, bounded JavaScript fallback, synthetic dataset generation, and regression.
+- **IndexedDB** for a user-triggered local transaction benchmark with deterministic synthetic records, a real secondary index, measured timings, and explicit cleanup.
 - **Experimental browser-native AI** when a local `LanguageModel` API exists, with an explicitly labelled deterministic fallback.
 - **English-first routing** with complete Ukrainian UI and content parity.
-- **Five lazy lab modules**: Go runtime pulse, Rust/WASM forge, data-science bench, local AI mapper, and a canvas mini-game.
+- **Six lazy lab modules**: Go runtime pulse, Rust/WASM forge, data-science bench, local AI mapper, a canvas mini-game, and a local IndexedDB vault.
 
 No screen claims literal zero latency. The UI measures real device and network timing, labels synthetic signals, and treats “instant” as a performance budget rather than mythology.
 
@@ -43,10 +44,11 @@ Browser
 ├── lazy lab deck    → one module downloaded on selection
 ├── analytics worker → deterministic OLS analytics
 ├── compute worker   → hashed Rust/WASM or honest JS fallback
+├── local vault      → synthetic IndexedDB records + indexed query
 └── optional AI      → browser LanguageModel or honest local ruleset
 ```
 
-See [Architecture](docs/ARCHITECTURE.md), [performance budgets](docs/PERFORMANCE.md), [content/localization guide](docs/CONTENT_GUIDE.md), and the [Go API contract](docs/GO_API.md).
+See [Architecture](docs/ARCHITECTURE.md), [performance budgets](docs/PERFORMANCE.md), the [measured quality report](docs/QUALITY_REPORT.md), [content/localization guide](docs/CONTENT_GUIDE.md), and the [Go API contract](docs/GO_API.md).
 
 ## Local development
 
@@ -97,11 +99,11 @@ Generated bindings live in `src/generated/horizon-engine/` so Vercel does not ne
 ## Performance and privacy
 
 - Initial production budget: largest JS chunk ≤ 90 KiB gzip, all JS ≤ 175 KiB gzip, CSS ≤ 45 KiB gzip.
-- Lab modules are split and loaded on interaction.
+- Lab modules are split by system; no module chunk or experiment runs until the visitor selects it.
 - Device pixel ratio is capped for the atmospheric renderer.
 - Animation freezes under `prefers-reduced-motion`.
 - `/api/pulse` is GET/HEAD only, `no-store`, has no application persistence, and derives no signal from the visitor.
-- No analytics vendor, cookies, fingerprinting, visitor database, or AI proxy is included.
+- No analytics vendor, cookies, fingerprinting, visitor database, or AI proxy is included. The opt-in Local Vault stores only synthetic records in the visitor's own IndexedDB and exposes a clear action.
 - A strict CSP, permissions policy, HSTS, no-sniff, and frame denial are configured in `vercel.json`.
 
 ## Deployment

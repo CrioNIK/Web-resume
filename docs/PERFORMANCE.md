@@ -18,13 +18,20 @@ The WASM package is excluded from the JavaScript budget and reported separately 
 
 These are targets, not hard-coded claims:
 
-- Core shell remains interactive without loading a lab module.
+- Core shell remains interactive without requesting a lab module chunk.
 - No lab computation runs before an explicit module selection.
 - Analytics runs off the main thread.
 - Rust/WASM and its bounded JavaScript fallback run off the main thread in a one-shot worker.
+- IndexedDB work begins only after explicit intent and reports the browser's real transaction and indexed-query timing.
 - Renderer DPR is capped at 1.5.
 - WebGPU and Canvas animation stop on unmount; reduced motion renders one frame.
 - API timing shows both client-observed round-trip and server-side preparation time because they measure different boundaries.
+
+## Recorded mobile baseline
+
+The 2026-09-01 completion candidate scored 100 in Lighthouse 13.4.1 for Performance, Accessibility, Best Practices, and SEO against the local production build under the default simulated mobile profile. FCP was 1.2 s, LCP 1.5 s, Speed Index 1.2 s, Total Blocking Time 0 ms, and CLS 0. The initial request trace contained zero lab-module chunks.
+
+These are lab results, not field Core Web Vitals. See the [quality report](QUALITY_REPORT.md) for the environment, interaction matrix, and limitations.
 
 ## How to verify
 
@@ -35,6 +42,7 @@ These are targets, not hard-coded claims:
 5. Test with WebGPU enabled, WebGPU unavailable, and reduced motion enabled.
 6. Test `/api/pulse` with and without a warm function; do not compare server timing to round-trip as if they were equivalent.
 7. Use mobile CPU/network throttling and record LCP, INP, CLS, and long tasks.
+8. Run and clear Local Vault; verify its IndexedDB database appears only after interaction and is deleted by the clear action.
 
 ## Caching
 

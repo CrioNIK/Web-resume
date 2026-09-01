@@ -22,6 +22,7 @@ The architecture optimizes four things:
 | Visual fallback | Canvas 2D | Equivalent atmosphere when WebGPU is absent |
 | Compute kernel | Rust 1.98 / wasm-bindgen | Deterministic particles, latency and signal statistics, timeline layout |
 | Data science | ES module worker | Seeded dataset generation, OLS regression, residual percentiles |
+| Local database | IndexedDB | Opt-in synthetic records, transactional writes, indexed reads, and explicit deletion |
 | Service | Go 1.26.7 | Stateless privacy and runtime pulse contract |
 | Deployment | Vercel | Global static CDN and a Frankfurt Go Function |
 
@@ -51,10 +52,11 @@ The fallback path is part of the product, not an error screen.
 ### Browser
 
 - Owns all visual rendering and interaction state.
-- Loads one lab module at a time through `React.lazy`.
+- Starts with an inert lab launcher and loads one module at a time through `React.lazy` only after visitor intent.
 - Runs analytics in a dedicated module worker.
 - Runs the Rust/WASM forge in a fresh dedicated worker, then terminates it after result, failure, timeout, or cancellation.
 - Emits the checked-in generated WASM package as a content-hashed Vite asset and loads it only after an explicit forge run.
+- Opens IndexedDB only after an explicit Local Vault run, writes only deterministic synthetic records, and offers database deletion in the same interface.
 - Does not send AI prompts to this application server.
 
 ### Go function
@@ -66,7 +68,7 @@ The fallback path is part of the product, not an error screen.
 
 ### Supabase boundary
 
-The portfolio does not connect to the private TableTop BRAMA database. The deployment audit confirmed that infrastructure exists for that separate product, but coupling a public portfolio to it would create unnecessary operational and privacy risk. If a future portfolio data feature needs persistence, it should receive a dedicated project, schema, RLS policies, retention policy, and threat review.
+The portfolio does not connect to the private TableTop BRAMA database. The deployment audit confirmed that infrastructure exists for that separate product, but coupling a public portfolio to it would create unnecessary operational and privacy risk. The public Local Vault demonstrates database mechanics entirely inside the visitor's browser with synthetic data; it is not a visitor database or a Supabase surrogate. If a future portfolio server-side data feature needs persistence, it should receive a dedicated project, schema, RLS policies, retention policy, and threat review.
 
 ## Content boundary
 
@@ -78,4 +80,5 @@ All public portfolio content is in `src/data/content.ts`. Private projects expos
 - A missing WASM package invokes a labelled JavaScript fallback.
 - WebGPU initialization errors are swallowed only at the capability boundary, then Canvas starts.
 - Browser AI initialization errors invoke the deterministic planner and disclose the change of mode.
+- IndexedDB failures produce an unsupported message; the interface never invents benchmark results.
 - Every expensive module is initiated by the visitor, so failures do not block the core portfolio.

@@ -14,10 +14,12 @@
 - Checked-in 47 KB WASM browser artifact built with wasm-pack 0.15 and emitted by Vite under a content hash.
 - Go 1.26.7 privacy-first pulse API for Vercel's beta Go runtime.
 - WebGPU procedural hero with Canvas 2D and reduced-motion fallbacks.
-- Lazy Runtime Pulse, WASM Forge, Signal Science, Local AI, and Signal Run modules.
+- Lazy Runtime Pulse, WASM Forge, Signal Science, Local AI, Signal Run, and Local Vault modules.
+- A real, opt-in IndexedDB transaction benchmark with synthetic records, a secondary index, measured timings, and user-controlled deletion.
 - One-shot compute workers for Rust/WASM and the bounded JavaScript fallback, plus module-worker OLS analytics, browser-native AI capability bridge, and canvas mini-game.
 - Reproducible WASM path remapping so checked-in binaries remain byte-identical across different Cargo homes.
 - Strict TypeScript, Vitest, Rust and Go tests, bundle budgets, Node 24 CI actions, verified tool downloads, Dependabot, CSP, sitemap, hreflang, and operating documentation.
+- An inert lab launcher, user-controlled WebGPU motion, fixed mobile navigation and hash restoration, complete localized accessibility labels, and a recorded 100/100/100/100 mobile Lighthouse baseline.
 
 ### Removed
 

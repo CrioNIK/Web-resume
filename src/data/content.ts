@@ -16,6 +16,7 @@ export interface Project {
   proof: LocalizedText[];
   tags: string[];
   accent: string;
+  accentInk: string;
   liveUrl?: string;
   repoUrl?: string;
   evidence?: Array<{ label: LocalizedText; url: string }>;
@@ -54,6 +55,7 @@ export const projects: Project[] = [
     ],
     tags: ['React', 'TypeScript', 'i18n', 'Product systems'],
     accent: '#ff5c44',
+    accentInk: '#8a2f24',
     liveUrl: 'https://app-zeta-gules-57.vercel.app/',
   },
   {
@@ -88,6 +90,7 @@ export const projects: Project[] = [
     ],
     tags: ['Localization', 'XML', 'GitHub', 'Ukrainian', 'Polish'],
     accent: '#52e6b8',
+    accentInk: '#236c55',
     repoUrl: 'https://github.com/Yoonmoonsik/bg3dnd',
     evidence: [
       { label: { en: 'PR #1305 · complete Ukrainian locale', uk: 'PR #1305 · повна українська локаль' }, url: 'https://github.com/Yoonmoonsik/bg3dnd/pull/1305' },
@@ -105,8 +108,8 @@ export const projects: Project[] = [
       uk: 'Open-source лабораторія браузерних систем',
     },
     summary: {
-      en: 'This portfolio rebuilt as a small distributed system: a Rust-powered build and WASM kernel, browser-native GPU rendering, worker analytics, and a Go API.',
-      uk: 'Це портфоліо, перебудоване як мала розподілена система: Rust-збірка й WASM-ядро, браузерний GPU-рендеринг, worker-аналітика та Go API.',
+      en: 'This portfolio rebuilt as a small distributed system: a Rust-powered build and WASM kernel, browser-native GPU rendering, worker analytics, a local database, and a Go API.',
+      uk: 'Це портфоліо, перебудоване як мала розподілена система: Rust-збірка й WASM-ядро, браузерний GPU-рендеринг, worker-аналітика, локальна база та Go API.',
     },
     role: {
       en: 'Concept · systems architecture · product engineering',
@@ -128,6 +131,7 @@ export const projects: Project[] = [
     ],
     tags: ['Vite 8', 'React 19', 'Rust/WASM', 'Go beta', 'WebGPU'],
     accent: '#8e7dff',
+    accentInk: '#514596',
     liveUrl: 'https://web-resume-murex.vercel.app/en/',
     repoUrl: 'https://github.com/CrioNIK/Web-resume',
   },
@@ -163,12 +167,17 @@ export const projects: Project[] = [
     ],
     tags: ['WXT', 'React', 'Browser extension', 'Localization'],
     accent: '#f3b85a',
+    accentInk: '#76541c',
   },
 ];
 
 export const copy = {
   en: {
     skip: 'Skip to main content',
+    home: 'Home',
+    manifest: 'System manifest',
+    highlights: 'Verified highlights',
+    moduleLoading: 'MODULE / LOADING…',
     brandMeta: 'MYKYTA BATURIN · CRIOMANT',
     brandSub: 'HORIZON LAB / KYIV',
     navigation: 'Primary navigation',
@@ -191,7 +200,7 @@ export const copy = {
       ['23', 'merged upstream PRs'],
       ['10,710', 'localized entries reviewed'],
       ['EN / UK', 'complete product parity'],
-      ['4', 'live experimental runtimes'],
+      ['6', 'live lab systems'],
     ],
     workEyebrow: 'Selected work / verified boundaries',
     workTitle: 'Products with receipts, not mythology.',
@@ -202,14 +211,16 @@ export const copy = {
     technologies: 'Technologies',
     privateSource: 'Private source',
     labEyebrow: 'Horizon deck / browser-native experiments',
-    labTitle: 'Five systems. Loaded only when you ask.',
+    labTitle: 'Six systems. Loaded only when you ask.',
     labLead: 'Each module exercises a real runtime or browser primitive. Unsupported experiments fall back cleanly instead of faking capability.',
+    labEmpty: 'Choose a system to request its code and start the experiment. Nothing in this deck runs before your intent.',
     labTabs: {
       pulse: ['01', 'Runtime pulse', 'Measure browser → Go API round-trip and cache behavior.'],
       compute: ['02', 'WASM forge', 'Run a deterministic Rust compute kernel in this tab.'],
       analytics: ['03', 'Signal science', 'Generate and regress a dataset off the main thread.'],
       ai: ['04', 'Local AI', 'Use browser-native AI when available, otherwise an explicit offline planner.'],
       game: ['05', 'Signal run', 'A tiny keyboard/touch game rendered directly to canvas.'],
+      database: ['06', 'Local vault', 'Write and query a real IndexedDB database without leaving this device.'],
     },
     runtimeLabels: {
       title: 'Runtime pulse',
@@ -251,6 +262,10 @@ export const copy = {
   },
   uk: {
     skip: 'Перейти до основного вмісту',
+    home: 'Головна',
+    manifest: 'Системний маніфест',
+    highlights: 'Перевірені результати',
+    moduleLoading: 'МОДУЛЬ / ЗАВАНТАЖЕННЯ…',
     brandMeta: 'МИКИТА БАТУРІН · CRIOMANT',
     brandSub: 'HORIZON LAB / КИЇВ',
     navigation: 'Головна навігація',
@@ -273,7 +288,7 @@ export const copy = {
       ['23', 'злиті upstream PR'],
       ['10 710', 'перевірених локалізованих записів'],
       ['EN / UK', 'повний продуктовий відповідник'],
-      ['4', 'живі експериментальні runtime'],
+      ['6', 'живих лабораторних систем'],
     ],
     workEyebrow: 'Вибрані роботи / перевірні межі',
     workTitle: 'Продукти з доказами, а не міфологією.',
@@ -284,14 +299,16 @@ export const copy = {
     technologies: 'Технології',
     privateSource: 'Приватний код',
     labEyebrow: 'Horizon deck / браузерні експерименти',
-    labTitle: 'П’ять систем. Завантажуються лише на запит.',
+    labTitle: 'Шість систем. Лише на твій запит.',
     labLead: 'Кожен модуль використовує реальний runtime або browser primitive. Непідтримувані експерименти мають чесний fallback.',
+    labEmpty: 'Обери систему, щоб завантажити її код і запустити експеримент. До твоєї дії ця лабораторія нічого не виконує.',
     labTabs: {
       pulse: ['01', 'Runtime pulse', 'Виміряй round-trip браузер → Go API та поведінку кешу.'],
       compute: ['02', 'WASM forge', 'Запусти детерміноване Rust-ядро безпосередньо в цій вкладці.'],
       analytics: ['03', 'Signal science', 'Згенеруй датасет і регресію поза main thread.'],
       ai: ['04', 'Локальний ШІ', 'Використай browser-native AI, якщо доступний, або явний offline planner.'],
       game: ['05', 'Signal run', 'Мала клавіатурна/touch-гра з прямим canvas-рендерингом.'],
+      database: ['06', 'Локальна база', 'Запиши й опитай справжню IndexedDB-базу без передавання даних із пристрою.'],
     },
     runtimeLabels: {
       title: 'Runtime pulse',

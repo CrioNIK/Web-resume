@@ -7,8 +7,9 @@ const WasmForge = lazy(() => import('../modules/WasmForge'));
 const SignalScience = lazy(() => import('../modules/SignalScience'));
 const LocalAI = lazy(() => import('../modules/LocalAI'));
 const SignalRun = lazy(() => import('../modules/SignalRun'));
+const LocalVault = lazy(() => import('../modules/LocalVault'));
 
-type LabKey = 'pulse' | 'compute' | 'analytics' | 'ai' | 'game';
+type LabKey = 'pulse' | 'compute' | 'analytics' | 'ai' | 'game' | 'database';
 
 const modules: Record<LabKey, typeof RuntimePulse> = {
   pulse: RuntimePulse,
@@ -16,12 +17,13 @@ const modules: Record<LabKey, typeof RuntimePulse> = {
   analytics: SignalScience,
   ai: LocalAI,
   game: SignalRun,
+  database: LocalVault,
 };
 
 export default function LabDeck({ locale }: { locale: Locale }) {
-  const [active, setActive] = useState<LabKey>('pulse');
+  const [active, setActive] = useState<LabKey | null>(null);
   const c = copy[locale];
-  const ActiveModule = modules[active];
+  const ActiveModule = active ? modules[active] : null;
   const keys = Object.keys(modules) as LabKey[];
   const tabRefs = useRef<Partial<Record<LabKey, HTMLButtonElement | null>>>({});
 
@@ -44,7 +46,7 @@ export default function LabDeck({ locale }: { locale: Locale }) {
 
   return (
     <div className="lab-deck">
-      <div className="lab-tabs" role="tablist" aria-label={c.labTitle} aria-orientation="horizontal">
+      <div className="lab-tabs" role="group" aria-label={c.labTitle}>
         {keys.map((key) => {
           const [index, title, teaser] = c.labTabs[key];
           const selected = active === key;
@@ -52,11 +54,7 @@ export default function LabDeck({ locale }: { locale: Locale }) {
             <button
               key={key}
               type="button"
-              role="tab"
-              id={`lab-tab-${key}`}
-              aria-selected={selected}
-              aria-controls={`lab-panel-${key}`}
-              tabIndex={selected ? 0 : -1}
+              aria-pressed={selected}
               ref={(node) => { tabRefs.current[key] = node; }}
               onClick={() => activateTab(key)}
               onKeyDown={(event) => handleTabKey(event, key)}
@@ -70,14 +68,21 @@ export default function LabDeck({ locale }: { locale: Locale }) {
       </div>
       <div
         className="lab-panel"
-        id={`lab-panel-${active}`}
-        role="tabpanel"
-        aria-labelledby={`lab-tab-${active}`}
+        id="lab-panel"
+        role="region"
+        aria-label={active ? c.labTabs[active][1] : c.labTitle}
         tabIndex={0}
       >
-        <Suspense fallback={<div className="module-loading">MODULE / LOADING…</div>}>
-          <ActiveModule locale={locale} />
-        </Suspense>
+        {ActiveModule ? (
+          <Suspense fallback={<div className="module-loading">{c.moduleLoading}</div>}>
+            <ActiveModule locale={locale} />
+          </Suspense>
+        ) : (
+          <div className="lab-empty">
+            <span>00 / 06</span>
+            <p>{c.labEmpty}</p>
+          </div>
+        )}
       </div>
     </div>
   );

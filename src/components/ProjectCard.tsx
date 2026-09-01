@@ -8,7 +8,10 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project, locale }: ProjectCardProps) {
   const c = copy[locale];
-  const style = { '--project-accent': project.accent } as CSSProperties;
+  const style = {
+    '--project-accent': project.accent,
+    '--project-accent-ink': project.accentInk,
+  } as CSSProperties;
 
   return (
     <article className="project-card" style={style}>
