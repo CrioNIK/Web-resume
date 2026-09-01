@@ -1,14 +1,17 @@
 import { useEffect, useRef } from 'react';
 import HorizonField from './components/HorizonField';
+import FrontierMatrix from './components/FrontierMatrix';
 import LabDeck from './components/LabDeck';
 import ProjectCard from './components/ProjectCard';
 import { copy, localeFromPath, projects } from './data/content';
+import { startSitePortfolioWebMcp } from './lib/webmcp';
 
 export default function App() {
   const locale = localeFromPath(window.location.pathname);
   const c = copy[locale];
   const otherLocale = locale === 'en' ? 'uk' : 'en';
   const otherLabel = locale === 'en' ? 'UA' : 'EN';
+  const otherLocaleHref = `/${otherLocale}/${window.location.hash}`;
   const mobileMenu = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
@@ -19,6 +22,8 @@ export default function App() {
     }
     document.documentElement.lang = locale;
   }, [locale]);
+
+  useEffect(() => startSitePortfolioWebMcp(locale), [locale]);
 
   useEffect(() => {
     if (!window.location.hash) return;
@@ -51,10 +56,10 @@ export default function App() {
         </nav>
 
         <div className="header-actions">
-          <span className="live-chip"><i aria-hidden="true" /> LIVE / V2</span>
+          <span className="live-chip"><i aria-hidden="true" /> LIVE / V3</span>
           <a
             className="language-switch"
-            href={`/${otherLocale}/`}
+            href={otherLocaleHref}
             hrefLang={otherLocale}
             lang={otherLocale}
             aria-label={`${c.language}: ${otherLabel}`}
@@ -92,14 +97,15 @@ export default function App() {
             <aside className="hero-manifest" aria-label={c.manifest}>
               <div className="manifest-head">
                 <span>SYSTEM MANIFEST</span>
-                <span>V2.0.0</span>
+                <span>V3.0.0</span>
               </div>
               <dl>
-                <div><dt>BUILD</dt><dd>VITE 8 / ROLLDOWN</dd></div>
+                <div><dt>BUILD</dt><dd>VITE 8 / OJ PARITY</dd></div>
                 <div><dt>COMPUTE</dt><dd>RUST → WASM</dd></div>
-                <div><dt>SERVICE</dt><dd>GO / VERCEL BETA</dd></div>
-                <div><dt>RENDER</dt><dd>WEBGPU → CANVAS</dd></div>
-                <div><dt>DATA</dt><dd>WORKER / INDEXEDDB</dd></div>
+                <div><dt>SERVICE</dt><dd>GO / DENO ARTIFACT</dd></div>
+                <div><dt>RENDER</dt><dd>WEBGPU / DOM CO-RENDER</dd></div>
+                <div><dt>AGENTS</dt><dd>WEBMCP / BROWSER AI</dd></div>
+                <div><dt>RUNTIMES</dt><dd>TS / NODE / COMPONENTS</dd></div>
                 <div><dt>LANG</dt><dd>EN / UK</dd></div>
               </dl>
               <p>{c.heroNote}</p>
@@ -132,10 +138,23 @@ export default function App() {
           </div>
         </section>
 
+        <section className="frontier-section section" id="frontier" aria-labelledby="frontier-title">
+          <div className="shell">
+            <header className="section-head section-head-light">
+              <p className="eyebrow"><span>02</span>{c.frontierEyebrow}</p>
+              <div>
+                <h2 id="frontier-title">{c.frontierTitle}</h2>
+                <p>{c.frontierLead}</p>
+              </div>
+            </header>
+            <FrontierMatrix locale={locale} />
+          </div>
+        </section>
+
         <section className="lab-section section" id="lab" aria-labelledby="lab-title">
           <div className="shell">
             <header className="section-head section-head-light">
-              <p className="eyebrow"><span>02</span>{c.labEyebrow}</p>
+              <p className="eyebrow"><span>03</span>{c.labEyebrow}</p>
               <div>
                 <h2 id="lab-title">{c.labTitle}</h2>
                 <p>{c.labLead}</p>
@@ -147,7 +166,7 @@ export default function App() {
 
         <section className="trajectory-section shell section" id="trajectory" aria-labelledby="trajectory-title">
           <header className="section-head">
-            <p className="eyebrow"><span>03</span>{c.trajectoryEyebrow}</p>
+            <p className="eyebrow"><span>04</span>{c.trajectoryEyebrow}</p>
             <div><h2 id="trajectory-title">{c.trajectoryTitle}</h2></div>
           </header>
           <ol className="trajectory-list">
@@ -164,7 +183,7 @@ export default function App() {
 
         <section className="principles-section shell section" aria-labelledby="principles-title">
           <header className="section-head">
-            <p className="eyebrow"><span>04</span>{c.principlesEyebrow}</p>
+            <p className="eyebrow"><span>05</span>{c.principlesEyebrow}</p>
             <div><h2 id="principles-title">{c.principlesTitle}</h2></div>
           </header>
           <div className="principles-grid">
@@ -181,7 +200,7 @@ export default function App() {
         <section className="contact-section" id="contact" aria-labelledby="contact-title">
           <div className="contact-field" aria-hidden="true">CRIO//MANT</div>
           <div className="shell contact-content">
-            <p className="eyebrow"><span>05</span>{c.contactEyebrow}</p>
+            <p className="eyebrow"><span>06</span>{c.contactEyebrow}</p>
             <h2 id="contact-title">{c.contactTitle}</h2>
             <p>{c.contactLead}</p>
             <div className="hero-actions">
@@ -195,7 +214,7 @@ export default function App() {
       <footer className="site-footer">
         <div className="shell">
           <p>{c.footer}</p>
-          <p>© {new Date().getFullYear()} · V2.0.0</p>
+          <p>© {new Date().getFullYear()} · V3.0.0</p>
         </div>
       </footer>
     </>

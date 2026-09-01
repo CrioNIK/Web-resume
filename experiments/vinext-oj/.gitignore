@@ -1,0 +1,8 @@
+node_modules/
+.next/
+dist/
+dist-oj/
+.vinext/
+.oj/
+next-env.d.ts
+*.log

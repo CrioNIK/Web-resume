@@ -1,0 +1,36 @@
+package criomant:horizon@0.1.0;
+
+/// Deterministic checksum service implemented by the Go component.
+interface checksum {
+  /// FNV-1a over every word in little-endian byte order.
+  hash: func(words: list<u32>) -> u32;
+}
+
+/// Fixed-point signal normalization implemented by the Rust component.
+interface normalize {
+  record normalized-signal {
+    values: list<u32>,
+    checksum: u32,
+    clamped: u32,
+  }
+
+  /// Clamp signed samples to the inclusive bounds and map them to
+  /// 0..1_000_000. Reversed bounds are normalized before processing.
+  signal: func(samples: list<s32>, floor: s32, ceiling: s32) -> normalized-signal;
+}
+
+/// Rust owns normalization and imports the checksum capability.
+world rust-normalizer {
+  import checksum;
+  export normalize;
+}
+
+/// Go supplies the checksum capability without WASI I/O.
+world go-checksum {
+  export checksum;
+}
+
+/// Public shape of the composed Rust + Go component.
+world component-mesh {
+  export normalize;
+}

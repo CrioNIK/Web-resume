@@ -1,0 +1,22 @@
+{
+  "resolve": {
+    "alias": {
+      "@": "./src"
+    }
+  },
+  "build": {
+    "outDir": "dist-oj",
+    "target": "es2022",
+    "sourcemap": false,
+    "rolldownOptions": {
+      "input": {
+        "root": "index.html",
+        "en": "en/index.html",
+        "uk": "uk/index.html"
+      }
+    }
+  },
+  "worker": {
+    "format": "es"
+  }
+}

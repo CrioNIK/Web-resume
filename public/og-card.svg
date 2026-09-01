@@ -9,7 +9,7 @@
   <path d="M90 86H550" stroke="#ff5c44" stroke-width="7"/>
   <text x="90" y="152" fill="#a2a6b0" font-family="monospace" font-size="20" letter-spacing="4">MYKYTA BATURIN / CRIOMANT</text>
   <text x="82" y="335" fill="#f2f0e9" font-family="Arial, sans-serif" font-weight="900" font-size="112" letter-spacing="-7">HORIZON</text>
-  <text x="82" y="440" fill="#ff5c44" font-family="Arial, sans-serif" font-weight="900" font-size="112" letter-spacing="-7">LAB // V2</text>
+  <text x="82" y="440" fill="#ff5c44" font-family="Arial, sans-serif" font-weight="900" font-size="112" letter-spacing="-7">LAB // V3</text>
   <text x="90" y="522" fill="#a2a6b0" font-family="monospace" font-size="21">RUST/WASM · GO · WEBGPU · AI · DATA · EN/UK</text>
   <rect x="90" y="558" width="1020" height="1" fill="#ffffff" opacity=".18"/>
   <text x="90" y="595" fill="#52e6b8" font-family="monospace" font-size="15" letter-spacing="2">PRODUCT ENGINEER / SYSTEMS BUILDER / KYIV</text>

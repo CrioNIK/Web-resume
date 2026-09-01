@@ -1,8 +1,10 @@
 # build output
 dist/
+dist-oj/
+artifacts/
+public/vendor/es-module-shims/
 
-# generated framework and tool output
-.astro/
+# generated tool output
 target/
 *.tsbuildinfo
 

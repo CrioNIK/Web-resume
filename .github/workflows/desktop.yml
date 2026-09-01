@@ -1,0 +1,233 @@
+name: Desktop artifacts
+
+on:
+  push:
+    branches: [master]
+    tags: ["v*"]
+    paths:
+      - ".github/workflows/desktop.yml"
+      - "desktop/**"
+      - "docs/DESKTOP.md"
+      - "src/**"
+      - "public/**"
+      - "en/**"
+      - "uk/**"
+      - "index.html"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.ts"
+  pull_request:
+    paths:
+      - ".github/workflows/desktop.yml"
+      - "desktop/**"
+      - "docs/DESKTOP.md"
+      - "src/**"
+      - "public/**"
+      - "en/**"
+      - "uk/**"
+      - "index.html"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.ts"
+  workflow_dispatch:
+    inputs:
+      build_native_desktop:
+        description: Build the experimental Windows WebView package (not one file)
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  local-server-exe:
+    name: Single-file Windows local server
+    runs-on: windows-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build production frontend
+        run: npm run build
+
+      - name: Set up pinned Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9.5
+
+      - name: Verify Deno launcher
+        shell: pwsh
+        run: |
+          deno --version
+          deno fmt --check --config desktop/deno.json desktop/main.ts desktop/deno.json
+          deno lint --config desktop/deno.json desktop/main.ts
+          deno check --config desktop/deno.json desktop/main.ts
+          deno run --config desktop/deno.json --allow-read=dist desktop/main.ts --self-test
+
+      - name: Compile single-file Windows launcher
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts | Out-Null
+          deno compile --config desktop/deno.json -P=local-server `
+            --target x86_64-pc-windows-msvc `
+            --include dist `
+            --output artifacts/HorizonLab-Local-Server-windows-x64.exe `
+            desktop/main.ts
+
+      - name: Smoke test embedded site from an isolated directory
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $smokeRoot = Join-Path $env:RUNNER_TEMP "horizon-local-server-smoke"
+          New-Item -ItemType Directory -Force -Path $smokeRoot | Out-Null
+          $smokeExe = Join-Path $smokeRoot "HorizonLab-Local-Server-windows-x64.exe"
+          Copy-Item -LiteralPath "artifacts/HorizonLab-Local-Server-windows-x64.exe" -Destination $smokeExe
+          $stdout = Join-Path $smokeRoot "stdout.log"
+          $stderr = Join-Path $smokeRoot "stderr.log"
+          $process = Start-Process -FilePath $smokeExe `
+            -ArgumentList "--port=4177" `
+            -WorkingDirectory $smokeRoot `
+            -RedirectStandardOutput $stdout `
+            -RedirectStandardError $stderr `
+            -WindowStyle Hidden `
+            -PassThru
+
+          try {
+            $health = $null
+            for ($attempt = 0; $attempt -lt 30; $attempt += 1) {
+              try {
+                $health = Invoke-RestMethod -Uri "http://127.0.0.1:4177/__health" -TimeoutSec 1
+                break
+              } catch {
+                Start-Sleep -Milliseconds 250
+              }
+            }
+
+            if ($null -eq $health -or $health.status -ne "ok") {
+              throw "The embedded health endpoint did not become ready."
+            }
+
+            $english = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:4177/en/"
+            $ukrainian = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:4177/uk/"
+            $ukrainianNoSlash = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:4177/uk"
+            $spaRoute = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:4177/en/offline-proof"
+            if ($english.StatusCode -ne 200 -or $english.Content -notmatch "Product Engineer") {
+              throw "English build smoke test failed."
+            }
+            if ($ukrainian.StatusCode -ne 200 -or $ukrainian.Content -notmatch "lang=\"uk\"") {
+              throw "Ukrainian build smoke test failed."
+            }
+            if ($ukrainianNoSlash.StatusCode -ne 200 -or $ukrainianNoSlash.Content -notmatch "lang=\"uk\"") {
+              throw "Locale route without a trailing slash failed."
+            }
+            if ($spaRoute.StatusCode -ne 200 -or $spaRoute.Content -notmatch "lang=\"en\"") {
+              throw "Localized SPA fallback smoke test failed."
+            }
+
+            $assetName = (Get-ChildItem -LiteralPath dist/assets -Filter "*.js" -File | Select-Object -First 1).Name
+            $asset = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:4177/assets/$assetName"
+            if ($asset.StatusCode -ne 200 -or $asset.Headers["Content-Type"] -notmatch "text/javascript") {
+              throw "Hashed JavaScript asset smoke test failed."
+            }
+
+            try {
+              Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:4177/assets/does-not-exist.js" -ErrorAction Stop
+              throw "A missing asset was unexpectedly served."
+            } catch {
+              if ([int]$_.Exception.Response.StatusCode -ne 404) { throw }
+            }
+          } finally {
+            if (-not $process.HasExited) { Stop-Process -Id $process.Id -Force }
+            Get-Content -LiteralPath $stdout -ErrorAction SilentlyContinue
+            Get-Content -LiteralPath $stderr -ErrorAction SilentlyContinue
+          }
+
+      - name: Write SHA-256 checksum
+        shell: pwsh
+        run: |
+          $file = "artifacts/HorizonLab-Local-Server-windows-x64.exe"
+          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $file).Hash.ToLowerInvariant()
+          "$hash  HorizonLab-Local-Server-windows-x64.exe" |
+            Set-Content -Encoding ascii "artifacts/HorizonLab-Local-Server-windows-x64.exe.sha256"
+
+      - name: Upload single-file launcher
+        uses: actions/upload-artifact@v4
+        with:
+          name: HorizonLab-Local-Server-windows-x64
+          path: |
+            artifacts/HorizonLab-Local-Server-windows-x64.exe
+            artifacts/HorizonLab-Local-Server-windows-x64.exe.sha256
+          if-no-files-found: error
+          retention-days: 14
+
+  native-desktop-webview:
+    name: Experimental Windows WebView package
+    if: ${{ startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.build_native_desktop) }}
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install and build frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Set up pinned Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9.5
+
+      - name: Build Windows WebView directory
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts | Out-Null
+          deno desktop --config desktop/deno.json -P=local-server `
+            --target x86_64-pc-windows-msvc `
+            --backend webview `
+            --include dist `
+            --output artifacts/HorizonLab-Desktop `
+            desktop/main.ts
+
+      - name: Package directory and checksum
+        shell: pwsh
+        run: |
+          $zip = "artifacts/HorizonLab-Desktop-webview-windows-x64.zip"
+          Compress-Archive -Path "artifacts/HorizonLab-Desktop/*" -DestinationPath $zip -CompressionLevel Optimal
+          $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip).Hash.ToLowerInvariant()
+          "$hash  HorizonLab-Desktop-webview-windows-x64.zip" |
+            Set-Content -Encoding ascii "artifacts/HorizonLab-Desktop-webview-windows-x64.zip.sha256"
+
+      - name: Upload experimental desktop package
+        uses: actions/upload-artifact@v4
+        with:
+          name: HorizonLab-Desktop-webview-windows-x64
+          path: |
+            artifacts/HorizonLab-Desktop-webview-windows-x64.zip
+            artifacts/HorizonLab-Desktop-webview-windows-x64.zip.sha256
+          if-no-files-found: error
+          retention-days: 14

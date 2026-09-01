@@ -1,0 +1,48 @@
+{
+  "$schema": "https://raw.githubusercontent.com/denoland/deno/v2.9.5/cli/schemas/config-file.v1.json",
+  "name": "criomant-horizon-local-server",
+  "version": "3.0.0",
+  "exports": "./main.ts",
+  "lock": false,
+  "nodeModulesDir": "none",
+  "fmt": {
+    "lineWidth": 110,
+    "semiColons": true,
+    "singleQuote": false,
+    "include": ["main.ts", "deno.json"]
+  },
+  "lint": {
+    "include": ["main.ts"]
+  },
+  "tasks": {
+    "check": "deno check main.ts",
+    "lint": "deno lint main.ts",
+    "self-test": "deno run --allow-read=../dist main.ts --self-test",
+    "serve": "deno run --allow-read=../dist --allow-net=127.0.0.1 main.ts"
+  },
+  "permissions": {
+    "local-server": {
+      "read": false,
+      "write": false,
+      "net": ["127.0.0.1"],
+      "env": false,
+      "sys": false,
+      "run": false,
+      "ffi": false,
+      "import": false
+    }
+  },
+  "compile": {
+    "permissions": "local-server"
+  },
+  "desktop": {
+    "app": {
+      "name": "CrioMant Horizon Lab",
+      "identifier": "dev.criomant.horizonlab"
+    },
+    "backend": "webview",
+    "output": {
+      "windows": "../artifacts/desktop/HorizonLab-Desktop"
+    }
+  }
+}

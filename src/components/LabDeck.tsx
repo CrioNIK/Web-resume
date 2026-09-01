@@ -8,8 +8,15 @@ const SignalScience = lazy(() => import('../modules/SignalScience'));
 const LocalAI = lazy(() => import('../modules/LocalAI'));
 const SignalRun = lazy(() => import('../modules/SignalRun'));
 const LocalVault = lazy(() => import('../modules/LocalVault'));
+const BrowserTypeScript = lazy(() => import('../modules/BrowserTypeScript'));
+const AgentTools = lazy(() => import('../modules/AgentTools'));
+const SpatialInterface = lazy(() => import('../modules/SpatialInterface'));
+const NeuralField = lazy(() => import('../modules/NeuralField'));
+const WebContainerLab = lazy(() => import('../modules/WebContainerLab'));
+const ComponentMesh = lazy(() => import('../modules/ComponentMesh'));
 
-type LabKey = 'pulse' | 'compute' | 'analytics' | 'ai' | 'game' | 'database';
+type LabKey = 'pulse' | 'compute' | 'analytics' | 'ai' | 'game' | 'database'
+  | 'browser' | 'agent' | 'spatial' | 'neural' | 'container' | 'component';
 
 const modules: Record<LabKey, typeof RuntimePulse> = {
   pulse: RuntimePulse,
@@ -18,6 +25,12 @@ const modules: Record<LabKey, typeof RuntimePulse> = {
   ai: LocalAI,
   game: SignalRun,
   database: LocalVault,
+  browser: BrowserTypeScript,
+  agent: AgentTools,
+  spatial: SpatialInterface,
+  neural: NeuralField,
+  container: WebContainerLab,
+  component: ComponentMesh,
 };
 
 export default function LabDeck({ locale }: { locale: Locale }) {
@@ -79,7 +92,7 @@ export default function LabDeck({ locale }: { locale: Locale }) {
           </Suspense>
         ) : (
           <div className="lab-empty">
-            <span>00 / 06</span>
+            <span>00 / 12</span>
             <p>{c.labEmpty}</p>
           </div>
         )}

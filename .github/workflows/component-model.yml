@@ -1,0 +1,173 @@
+name: Component Model
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - components/**
+      - src/lib/component-mesh.ts
+      - src/lib/component-mesh.test.ts
+      - src/modules/ComponentMesh.tsx
+      - src/workers/component-mesh.worker.ts
+      - .github/workflows/component-model.yml
+  pull_request:
+    paths:
+      - components/**
+      - src/lib/component-mesh.ts
+      - src/lib/component-mesh.test.ts
+      - src/modules/ComponentMesh.tsx
+      - src/workers/component-mesh.worker.ts
+      - .github/workflows/component-model.yml
+
+permissions:
+  contents: read
+
+env:
+  COMPONENTIZE_GO_VERSION: 0.4.1
+  JCO_VERSION: 1.32.1
+  PREVIEW2_SHIM_VERSION: 0.22.0
+  WAC_VERSION: 0.10.1
+  WASM_TOOLS_VERSION: 1.258.0
+
+jobs:
+  compose-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version: 1.26.7
+          cache-dependency-path: components/go-checksum/go.sum
+
+      - uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c
+        with:
+          toolchain: 1.98.0
+          targets: wasm32-wasip2
+          components: rustfmt
+
+      - name: Install pinned Component Model tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --proto '=https' --tlsv1.2 -L --fail --silent --show-error \
+            "https://github.com/bytecodealliance/componentize-go/releases/download/v${COMPONENTIZE_GO_VERSION}/componentize-go-linux-amd64.tar.gz" \
+            -o /tmp/componentize-go.tar.gz
+          echo "1244591450916c9429c99db1c5af79013fa84eb70a27ba33e5260b71c94bc5da  /tmp/componentize-go.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/componentize-go.tar.gz -C /tmp
+          sudo install /tmp/componentize-go /usr/local/bin/componentize-go
+
+          curl --proto '=https' --tlsv1.2 -L --fail --silent --show-error \
+            "https://github.com/bytecodealliance/wac/releases/download/v${WAC_VERSION}/wac-cli-x86_64-unknown-linux-musl" \
+            -o /tmp/wac
+          echo "250c11762916ba733c7d22b62487580f21270ec9dde4f13460ea69d300e25406  /tmp/wac" | sha256sum -c -
+          sudo install /tmp/wac /usr/local/bin/wac
+
+          curl --proto '=https' --tlsv1.2 -L --fail --silent --show-error \
+            "https://github.com/bytecodealliance/wasm-tools/releases/download/v${WASM_TOOLS_VERSION}/wasm-tools-${WASM_TOOLS_VERSION}-x86_64-linux.tar.gz" \
+            -o /tmp/wasm-tools.tar.gz
+          echo "b52d14eb74a4852cc249369bd4480c2b2fdd876145f41db51ff52269ded240ce  /tmp/wasm-tools.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/wasm-tools.tar.gz -C /tmp
+          sudo install "/tmp/wasm-tools-${WASM_TOOLS_VERSION}-x86_64-linux/wasm-tools" /usr/local/bin/wasm-tools
+
+          componentize-go --version
+          wac --version
+          wasm-tools --version
+
+      - name: Check Rust source and build component
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo fmt --manifest-path components/rust-normalizer/Cargo.toml --all -- --check
+          CARGO_TARGET_DIR="$RUNNER_TEMP/rust-test-target" \
+            cargo test --manifest-path components/rust-normalizer/Cargo.toml --locked
+          CARGO_TARGET_DIR="$RUNNER_TEMP/rust-target" \
+            cargo build --manifest-path components/rust-normalizer/Cargo.toml \
+              --locked --release --target wasm32-wasip2
+          cp "$RUNNER_TEMP/rust-target/wasm32-wasip2/release/horizon_rust_normalizer.wasm" \
+            "$RUNNER_TEMP/rust-normalizer.component.wasm"
+
+      - name: Check Go source, bindings, and build component
+        working-directory: components/go-checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          go version
+          go test ./export_criomant_horizon_checksum
+          componentize-go --wit-path ../wit --world go-checksum bindings --format
+          git diff --exit-code -- go.mod go.sum wit_exports.go
+          componentize-go --wit-path ../wit --world go-checksum build \
+            --go "$(command -v go)" --output "$RUNNER_TEMP/go-checksum.component.wasm"
+
+      - name: Validate, inspect, and compose
+        shell: bash
+        run: |
+          set -euo pipefail
+          wasm-tools validate "$RUNNER_TEMP/rust-normalizer.component.wasm"
+          wasm-tools validate "$RUNNER_TEMP/go-checksum.component.wasm"
+          wasm-tools component wit "$RUNNER_TEMP/rust-normalizer.component.wasm" \
+            > "$RUNNER_TEMP/rust-normalizer.wit"
+          wasm-tools component wit "$RUNNER_TEMP/go-checksum.component.wasm" \
+            > "$RUNNER_TEMP/go-checksum.wit"
+          grep -F 'import criomant:horizon/checksum@0.1.0;' "$RUNNER_TEMP/rust-normalizer.wit"
+          grep -F 'export criomant:horizon/normalize@0.1.0;' "$RUNNER_TEMP/rust-normalizer.wit"
+          grep -F 'export criomant:horizon/checksum@0.1.0;' "$RUNNER_TEMP/go-checksum.wit"
+
+          wac plug "$RUNNER_TEMP/rust-normalizer.component.wasm" \
+            --plug "$RUNNER_TEMP/go-checksum.component.wasm" \
+            -o "$RUNNER_TEMP/component-mesh.component.wasm"
+          wasm-tools validate "$RUNNER_TEMP/component-mesh.component.wasm"
+          wasm-tools component wit "$RUNNER_TEMP/component-mesh.component.wasm" \
+            > "$RUNNER_TEMP/component-mesh.wit"
+          grep -F 'export criomant:horizon/normalize@0.1.0;' "$RUNNER_TEMP/component-mesh.wit"
+          if grep -Fq 'import criomant:horizon/checksum' "$RUNNER_TEMP/component-mesh.wit"; then
+            echo 'private checksum import survived composition' >&2
+            exit 1
+          fi
+
+      - name: Transpile and execute generated browser binding
+        shell: bash
+        run: |
+          set -euo pipefail
+          runtime="$RUNNER_TEMP/component-runtime"
+          mkdir -p "$runtime"
+          printf '{"private":true,"type":"module"}\n' > "$runtime/package.json"
+          npm install --prefix "$runtime" --no-save --no-package-lock \
+            "@bytecodealliance/jco@${JCO_VERSION}" \
+            "@bytecodealliance/preview2-shim@${PREVIEW2_SHIM_VERSION}"
+          "$runtime/node_modules/.bin/jco" transpile \
+            "$RUNNER_TEMP/component-mesh.component.wasm" \
+            -o "$runtime/generated" \
+            --name component-mesh \
+            --no-namespaced-exports \
+            --base64-cutoff=0
+          node components/scripts/verify-browser.mjs "$runtime/generated/component-mesh.js"
+
+      - name: Record toolchain manifest
+        shell: bash
+        run: |
+          cat > "$RUNNER_TEMP/toolchain.txt" <<EOF
+          rustc $(rustc --version)
+          go $(go version)
+          componentize-go $(componentize-go --version)
+          wac $(wac --version)
+          wasm-tools $(wasm-tools --version)
+          jco ${JCO_VERSION}
+          preview2-shim ${PREVIEW2_SHIM_VERSION}
+          EOF
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: horizon-component-mesh
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/component-mesh.component.wasm
+            ${{ runner.temp }}/component-mesh.wit
+            ${{ runner.temp }}/component-runtime/generated/
+            ${{ runner.temp }}/toolchain.txt
+            components/wit/horizon.wit

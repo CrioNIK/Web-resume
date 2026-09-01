@@ -1,0 +1,97 @@
+name: Vinext on oj probe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "experiments/vinext-oj/**"
+      - ".github/workflows/vinext-probe.yml"
+  push:
+    paths:
+      - "experiments/vinext-oj/**"
+      - ".github/workflows/vinext-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  compatibility:
+    name: Canonical Vinext + experimental oj
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+        working-directory: experiments/vinext-oj
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: experiments/vinext-oj/package-lock.json
+
+      - name: Install fixture dependencies
+        run: npm ci
+
+      - name: Build with canonical Vinext CLI
+        id: vinext-build
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee vinext-build.log
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install pinned oj
+        id: oj-install
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          cargo install oj --version 0.1.11 --locked 2>&1 | tee oj-install.log
+
+      - name: Probe Vinext through oj
+        id: oj-probe
+        if: steps.oj-install.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npm run build:oj 2>&1 | tee oj-build.log
+
+      - name: Publish compatibility summary
+        if: always()
+        env:
+          VINEXT_OUTCOME: ${{ steps.vinext-build.outcome }}
+          OJ_INSTALL_OUTCOME: ${{ steps.oj-install.outcome }}
+          OJ_OUTCOME: ${{ steps.oj-probe.outcome }}
+          OJ_CONCLUSION: ${{ steps.oj-probe.conclusion }}
+        run: |
+          {
+            echo "## Vinext on oj compatibility probe"
+            echo
+            echo "| Path | Version | Result | Gate |"
+            echo "| --- | --- | --- | --- |"
+            echo "| Canonical Vinext build | 1.0.0-beta.8 | ${VINEXT_OUTCOME} | required |"
+            echo "| oj installation | 0.1.11 | ${OJ_INSTALL_OUTCOME} | informational |"
+            echo "| oj build of the same Vinext config | 0.1.11 | ${OJ_OUTCOME} | informational |"
+            echo
+            echo "The oj step conclusion is \`${OJ_CONCLUSION}\` because the experimental probe is allowed to fail. This result is a compatibility observation for the pinned fixture, not a production-readiness claim."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload probe evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vinext-oj-probe-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            experiments/vinext-oj/vinext-build.log
+            experiments/vinext-oj/oj-install.log
+            experiments/vinext-oj/oj-build.log
+            experiments/vinext-oj/dist/**
+            experiments/vinext-oj/dist-oj/**

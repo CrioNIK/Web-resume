@@ -335,6 +335,25 @@
   .evidence-list a { display: flex; justify-content: space-between; gap: 12px; color: var(--paper-muted); font: 600 9px/1.45 var(--mono); text-decoration: none; }
   .evidence-list a:hover { color: var(--paper-ink); }
 
+  .frontier-section { position: relative; overflow: hidden; background: #10131a; color: var(--text); }
+  .frontier-section::before { content: "10"; position: absolute; inset: -5vw -2vw auto auto; color: rgba(255,255,255,.025); font: 900 34vw/.75 var(--display); pointer-events: none; }
+  .frontier-section .shell { position: relative; }
+  .frontier-matrix { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line-dark); border-left: 1px solid var(--line-dark); }
+  .frontier-card { position: relative; min-height: 360px; display: flex; flex-direction: column; padding: 24px; border-right: 1px solid var(--line-dark); border-bottom: 1px solid var(--line-dark); background: rgba(7,8,11,.34); }
+  .frontier-card::before { content: ""; position: absolute; inset: 0 auto auto 0; width: 100%; height: 2px; background: #777d89; transform: scaleX(.22); transform-origin: left; transition: transform 220ms ease; }
+  .frontier-card:hover::before { transform: scaleX(1); }
+  .frontier-card.is-live::before { background: var(--mint); }
+  .frontier-card.is-verified::before { background: var(--violet); }
+  .frontier-card.is-gated::before { background: var(--amber); }
+  .frontier-card header { display: flex; justify-content: space-between; gap: 16px; color: #747a86; font: 650 9px/1 var(--mono); text-transform: uppercase; }
+  .frontier-card header strong { color: var(--text); font-weight: 650; }
+  .frontier-card > p:first-of-type { margin-top: 48px; color: var(--coral); font: 650 8px/1.3 var(--mono); letter-spacing: .08em; }
+  .frontier-card h3 { margin-top: 12px; font: 800 clamp(1.45rem, 2vw, 2.35rem)/.92 var(--display); letter-spacing: -.04em; text-transform: uppercase; overflow-wrap: anywhere; }
+  .frontier-card h4 { margin-top: 12px; color: #d9dbe0; font: 650 9px/1.35 var(--mono); text-transform: uppercase; }
+  .frontier-card > p:last-of-type { margin-top: 18px; color: #969ba6; font-size: .82rem; line-height: 1.55; }
+  .frontier-card > a { display: flex; justify-content: space-between; gap: 16px; margin-top: auto; padding-top: 28px; color: #c9cbd1; font: 650 9px/1 var(--mono); text-decoration: none; text-transform: uppercase; }
+  .frontier-card > a:hover { color: var(--mint); }
+
   .lab-section { position: relative; overflow: hidden; background: var(--ink); color: var(--text); }
   .lab-section::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 64px 64px; mask-image: linear-gradient(to bottom, black, transparent 80%); }
   .lab-section .shell { position: relative; }
@@ -342,9 +361,9 @@
   .section-head-light .eyebrow span { color: var(--coral); }
   .section-head-light > div > p { color: var(--muted); }
 
-  .lab-deck { display: grid; grid-template-columns: minmax(250px, 0.38fr) minmax(0, 1.62fr); min-height: 680px; border: 1px solid var(--line-dark); background: rgba(14, 17, 23, 0.88); box-shadow: 0 40px 120px rgba(0, 0, 0, 0.32); }
-  .lab-tabs { display: flex; flex-direction: column; border-right: 1px solid var(--line-dark); }
-  .lab-tabs button { flex: 1; min-height: 112px; display: grid; grid-template-columns: 34px 1fr; grid-template-rows: auto 1fr; gap: 7px 10px; padding: 21px; border: 0; border-bottom: 1px solid var(--line-dark); background: transparent; color: var(--text); text-align: left; cursor: pointer; }
+  .lab-deck { display: grid; grid-template-columns: minmax(390px, 0.56fr) minmax(0, 1.44fr); min-height: 680px; border: 1px solid var(--line-dark); background: rgba(14, 17, 23, 0.88); box-shadow: 0 40px 120px rgba(0, 0, 0, 0.32); }
+  .lab-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(112px, auto); align-content: start; align-self: start; border-right: 1px solid var(--line-dark); }
+  .lab-tabs button { min-height: 112px; display: grid; grid-template-columns: 28px 1fr; grid-template-rows: auto 1fr; gap: 7px 8px; padding: 18px; border: 0; border-right: 1px solid var(--line-dark); border-bottom: 1px solid var(--line-dark); background: transparent; color: var(--text); text-align: left; cursor: pointer; }
   .lab-tabs button:last-child { border-bottom: 0; }
   .lab-tabs button > span { grid-row: 1 / 3; color: var(--muted); font: 650 9px/1 var(--mono); }
   .lab-tabs button strong { align-self: end; font: 750 15px/1.15 var(--display); letter-spacing: -0.02em; text-transform: uppercase; }
@@ -415,6 +434,8 @@
   .science-metrics > div { padding: 12px 9px; border-right: 1px solid var(--line-dark); }
   .science-metrics > div:last-child { border-right: 0; }
   .science-metrics dd { margin-top: 8px; color: var(--text); font: 700 12px/1 var(--mono); }
+  .neural-viewport { position: relative; width: 100%; height: clamp(280px, 32vw, 420px); min-height: 280px; margin-top: 18px; overflow: hidden; }
+  .neural-viewport > .neural-canvas { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
 
   .prompt-control { display: block; margin-top: 28px; }
   .prompt-control > span { display: block; margin-bottom: 9px; color: #989ca7; font: 600 9px/1 var(--mono); text-transform: uppercase; }
@@ -425,6 +446,32 @@
   .ai-output .module-empty { flex: 1; }
   .ai-output pre { flex: 1; margin: 24px 0 0; padding: 20px; overflow: auto; border-left: 2px solid var(--mint); background: rgba(82,230,184,.045); color: #c9ccd3; font: 500 12px/1.7 var(--mono); white-space: pre-wrap; }
   .module-warning { margin-top: 18px; padding: 12px; border: 1px solid rgba(243,184,90,.4); color: var(--amber); font: 550 9px/1.5 var(--mono); }
+  .ai-actions { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; margin-top: 30px; }
+  .ai-actions .module-action { margin-top: 0; }
+  .browser-ts-output pre,
+  .webcontainer-output pre { min-height: 350px; margin: 24px 0 0; padding: 20px; overflow: auto; border-left: 2px solid var(--mint); background: rgba(82,230,184,.045); color: #c9ccd3; font: 500 12px/1.7 var(--mono); white-space: pre-wrap; }
+
+  .spatial-module { min-height: 620px; }
+  .spatial-copy { max-width: 920px; }
+  .spatial-copy h3 { max-width: 840px; }
+  .spatial-stage { position: relative; min-height: 560px; margin-top: 42px; overflow: hidden; border: 1px solid var(--line-dark); background: #07080b; isolation: isolate; }
+  .spatial-stage::after { content: ""; position: absolute; z-index: 1; inset: 0; background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(7,8,11,.34) 100%); pointer-events: none; }
+  .spatial-stage > canvas { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; }
+  .spatial-render-label { position: absolute; z-index: 3; inset: 16px 16px auto auto; color: #8b909b; font: 600 8px/1 var(--mono); }
+  .spatial-nodes { position: absolute; z-index: 2; inset: 0; margin: 0; padding: 0; list-style: none; }
+  .spatial-nodes li { position: absolute; left: var(--node-x); top: var(--node-y); translate: -50% -50%; }
+  .spatial-nodes button { min-width: 150px; display: grid; gap: 5px; padding: 12px; border: 1px solid rgba(255,255,255,.28); background: rgba(7,8,11,.78); color: var(--text); text-align: left; cursor: pointer; backdrop-filter: blur(8px); }
+  .spatial-nodes button:hover,
+  .spatial-nodes button[aria-pressed="true"] { border-color: var(--mint); background: rgba(82,230,184,.12); box-shadow: 0 0 28px rgba(82,230,184,.12); }
+  .spatial-nodes button span,
+  .spatial-nodes button small { color: #8d929d; font: 600 8px/1.25 var(--mono); }
+  .spatial-nodes button strong { font: 750 13px/1.05 var(--display); text-transform: uppercase; }
+  .spatial-selection { position: absolute; z-index: 3; inset: auto 18px 18px auto; min-width: 220px; display: grid; gap: 5px; padding: 14px; border-left: 2px solid var(--coral); background: rgba(7,8,11,.8); }
+  .spatial-selection span,
+  .spatial-selection small,
+  .spatial-hint { color: #8d929d; font: 600 8px/1.4 var(--mono); text-transform: uppercase; }
+  .spatial-selection strong { font: 750 14px/1 var(--display); text-transform: uppercase; }
+  .spatial-hint { margin-top: 12px; }
 
   .game-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 28px; background: var(--line-dark); }
   .game-metrics span { min-height: 66px; display: flex; flex-direction: column; justify-content: space-between; padding: 10px; background: var(--ink-soft); color: #838894; font: 550 8px/1 var(--mono); text-transform: uppercase; }
@@ -490,7 +537,8 @@
     .live-chip { display: none; }
     .hero-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 44px; }
     .project-card { grid-template-columns: 64px minmax(0, 1fr) 250px; gap: 34px; }
-    .lab-deck { grid-template-columns: 230px minmax(0, 1fr); }
+    .frontier-matrix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .lab-deck { grid-template-columns: 340px minmax(0, 1fr); }
     .lab-panel { padding: 34px; }
     .module-grid { gap: 34px; }
   }
@@ -531,6 +579,7 @@
     .telemetry-card, .compute-card, .science-card, .ai-output, .game-card, .vault-card { min-height: 440px; }
     .trajectory-list li { grid-template-columns: 50px 110px 1fr; }
     .trajectory-list > li > strong { grid-column: 3; justify-self: start; }
+    .spatial-stage { min-height: 500px; }
   }
 
   @media (max-width: 620px) {
@@ -555,6 +604,8 @@
     .project-index { padding-top: 16px; }
     .project-meta { grid-column: 1; }
     .project-core h3 { font-size: clamp(2.7rem, 15vw, 4.8rem); }
+    .frontier-matrix { grid-template-columns: 1fr; }
+    .frontier-card { min-height: 310px; }
     .lab-section .shell { width: 100%; }
     .lab-section .section-head { width: var(--shell); margin-inline: auto; }
     .lab-deck { border-inline: 0; }
@@ -568,6 +619,11 @@
     .science-metrics { grid-template-columns: 1fr 1fr; }
     .science-metrics > div { border-bottom: 1px solid var(--line-dark); }
     .game-card canvas { min-height: 320px; }
+    .spatial-stage { min-height: 610px; padding: 54px 12px 110px; }
+    .spatial-stage > canvas { opacity: .5; }
+    .spatial-nodes { position: relative; display: grid; gap: 8px; }
+    .spatial-nodes li { position: static; translate: none; }
+    .spatial-nodes button { width: 100%; min-width: 0; }
     .trajectory-list li { grid-template-columns: 44px 1fr; gap: 18px; }
     .trajectory-list time { grid-column: 2; }
     .trajectory-list div { grid-column: 2; }
