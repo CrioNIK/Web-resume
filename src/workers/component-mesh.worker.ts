@@ -1,5 +1,6 @@
 /// <reference lib="webworker" />
 import init, { analyzeSignal, engineVersion } from '../generated/horizon-engine/horizon_engine.js';
+import horizonEngineWasmUrl from '../generated/horizon-engine/horizon_engine_bg.wasm?url';
 import {
   normalizeComponentMeshRequest,
   normalizeMeshSignal,
@@ -23,7 +24,7 @@ async function run(rawRequest: ComponentMeshRequest): Promise<ComponentMeshResul
   const started = performance.now();
 
   try {
-    await init();
+    await init({ module_or_path: horizonEngineWasmUrl });
     const report = analyzeSignal(new Float64Array(request.samples), 1);
 
     try {

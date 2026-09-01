@@ -5,6 +5,7 @@ import type {
   ComponentMeshResult,
   ComponentMeshWorkerResponse,
 } from '../lib/component-mesh';
+import ComponentMeshWorker from '../workers/component-mesh.worker?worker';
 
 const WORKER_TIMEOUT_MS = 20_000;
 const DEMO_REQUEST: ComponentMeshRequest = {
@@ -56,10 +57,7 @@ const text = {
 
 function runWorker(signal: AbortSignal): Promise<ComponentMeshResult> {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL('../workers/component-mesh.worker.ts', import.meta.url), {
-      type: 'module',
-      name: 'component-mesh',
-    });
+    const worker = new ComponentMeshWorker();
     let settled = false;
     const timeout = window.setTimeout(
       () => finish(reject, new Error('Component Mesh worker timed out.')),

@@ -7,6 +7,7 @@ import {
   type HorizonComputeWorkerResponse,
 } from '../engine/horizon-compute';
 import init, { engineVersion, ParticleField } from '../generated/horizon-engine/horizon_engine.js';
+import horizonEngineWasmUrl from '../generated/horizon-engine/horizon_engine_bg.wasm?url';
 
 const workerScope = self as unknown as DedicatedWorkerGlobalScope;
 function checksumPositions(positions: Float32Array): number {
@@ -32,7 +33,7 @@ function wasmFailureSummary(error: unknown): string {
 }
 
 async function runWasm(request: HorizonComputeRequest): Promise<HorizonComputeResult> {
-  await init();
+  await init({ module_or_path: horizonEngineWasmUrl });
 
   const started = performance.now();
   const field = new ParticleField(request.seed, 1280, 720, request.particles);

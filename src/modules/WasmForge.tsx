@@ -5,15 +5,13 @@ import type {
   HorizonComputeResult,
   HorizonComputeWorkerResponse,
 } from '../engine/horizon-compute';
+import HorizonComputeWorker from '../workers/horizon-compute.worker?worker';
 
 const WORKER_TIMEOUT_MS = 30_000;
 
 function runComputeWorker(request: HorizonComputeRequest, signal: AbortSignal): Promise<HorizonComputeResult> {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL('../workers/horizon-compute.worker.ts', import.meta.url), {
-      type: 'module',
-      name: 'horizon-compute',
-    });
+    const worker = new HorizonComputeWorker();
     let settled = false;
     const timeout = window.setTimeout(() => finish(reject, new Error('Compute worker timed out.')), WORKER_TIMEOUT_MS);
 

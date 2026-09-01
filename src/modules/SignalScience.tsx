@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Locale } from '../data/content';
 import type { AnalysisResult } from '../lib/analytics';
+import AnalyticsWorker from '../workers/analytics.worker?worker';
 
 const text = {
   en: {
@@ -34,7 +35,7 @@ export default function SignalScience({ locale }: { locale: Locale }) {
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
   useEffect(() => {
-    const worker = new Worker(new URL('../workers/analytics.worker.ts', import.meta.url), { type: 'module' });
+    const worker = new AnalyticsWorker();
     workerRef.current = worker;
     worker.onmessage = (event: MessageEvent<{ jobId: number; result: AnalysisResult }>) => {
       if (event.data.jobId !== jobRef.current) return;

@@ -21,6 +21,20 @@ const relativeFiles = files.map((file) => relative(root, file).replaceAll('\\', 
 const wasm = relativeFiles.filter((file) => file.endsWith('.wasm'));
 if (wasm.length === 0) throw new Error('oj build emitted no WebAssembly artifact.');
 
+for (const file of wasm) {
+  const artifact = await readFile(join(root, file));
+  if (artifact.length < 8 || !artifact.subarray(0, 4).equals(Buffer.from([0x00, 0x61, 0x73, 0x6d]))) {
+    throw new Error(`${file} is not a valid WebAssembly binary.`);
+  }
+}
+
+const workerEntries = ['analytics', 'component-mesh', 'horizon-compute'];
+const workers = Object.fromEntries(workerEntries.map((entry) => {
+  const file = relativeFiles.find((candidate) => candidate.includes(`${entry}.worker-`) && candidate.endsWith('.js'));
+  if (!file) throw new Error(`oj build emitted no ${entry} worker entry.`);
+  return [entry, file];
+}));
+
 for (const route of required) {
   const html = await readFile(join(root, route), 'utf8');
   const references = [...html.matchAll(/(?:src|href)="([^"#?]+)"/g)]
@@ -42,6 +56,7 @@ const report = {
   routes: required,
   files: files.length,
   wasm,
+  workers,
   bytes,
 };
 console.log(JSON.stringify(report, null, 2));
