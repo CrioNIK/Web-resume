@@ -24,7 +24,7 @@ export default function App() {
     if (!window.location.hash) return;
     const frame = requestAnimationFrame(() => {
       const target = document.getElementById(window.location.hash.slice(1));
-      target?.scrollIntoView({ block: 'start' });
+      target?.scrollIntoView({ behavior: 'instant', block: 'start' });
     });
     return () => cancelAnimationFrame(frame);
   }, []);
