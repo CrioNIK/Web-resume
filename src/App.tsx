@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import HorizonField from './components/HorizonField';
 import FrontierMatrix from './components/FrontierMatrix';
 import LabDeck from './components/LabDeck';
@@ -11,7 +11,8 @@ export default function App() {
   const c = copy[locale];
   const otherLocale = locale === 'en' ? 'uk' : 'en';
   const otherLabel = locale === 'en' ? 'UA' : 'EN';
-  const otherLocaleHref = `/${otherLocale}/${window.location.hash}`;
+  const [currentHash, setCurrentHash] = useState(() => window.location.hash);
+  const otherLocaleHref = `/${otherLocale}/${currentHash}`;
   const mobileMenu = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
@@ -24,6 +25,12 @@ export default function App() {
   }, [locale]);
 
   useEffect(() => startSitePortfolioWebMcp(locale), [locale]);
+
+  useEffect(() => {
+    const updateHash = () => setCurrentHash(window.location.hash);
+    window.addEventListener('hashchange', updateHash);
+    return () => window.removeEventListener('hashchange', updateHash);
+  }, []);
 
   useEffect(() => {
     if (!window.location.hash) return;
