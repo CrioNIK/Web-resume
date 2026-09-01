@@ -22,19 +22,24 @@
 - Expanded the lab navigation, keyboard model, responsive layout, documentation, privacy boundaries, and quality gates for twelve independent systems.
 - Kept Vite 8.2.2 and React 19.2.8 as the canonical production stack. Neither the oj lane nor the Vinext fixture changes the deployed framework.
 
-### Verified locally
+### Verified release evidence
 
 - Strict TypeScript project references, 10 Vitest files, and 32 deterministic tests pass.
-- The canonical Vite production build remains within budget: 118.4 KiB total JavaScript gzip, a 219.61 KiB raw / 69.90 KiB gzip main chunk, and 31.79 KiB raw / 7.38 KiB gzip CSS.
+- The canonical Vite production build remains within budget: 118.4 KiB total JavaScript gzip, a 214.65 KiB raw / 67.63 KiB gzip main chunk, and 31.31 KiB raw / 7.28 KiB gzip CSS.
 - The core Rust/WASM artifact remains 47.01 KiB raw / 19.55 KiB gzip.
 - The 4,768,287-byte browser TypeScript transformer remains a separate, intent-gated vendor asset rather than an initial-route dependency.
-- The isolated Vinext 1.0.0-beta.8 fixture passes its local 4/4 compatibility check, TypeScript validation, canonical five-stage build, HTTP 200 RSC smoke response, and dependency audit; the oj half remains a CI-only informational probe.
-- Local Component Model evidence validates a 2,685,908-byte Go component, a 49,745-byte Rust component, and a 2,740,261-byte composed artifact whose private checksum import is removed. The dedicated Jco browser-ESM smoke path remains encoded in CI rather than claimed as locally verified.
+- Canonical CI [run 33541570215](https://github.com/CrioNIK/Web-resume/actions/runs/33541570215) passed for release-code commit `d5b4ccb`.
+- Desktop [run 33541570191](https://github.com/CrioNIK/Web-resume/actions/runs/33541570191) passed at `d5b4ccb`: the one-file Windows server was built, smoke-tested from a clean directory, and checksummed; the separate WebView job was intentionally skipped.
+- Vinext [run 33539678970](https://github.com/CrioNIK/Web-resume/actions/runs/33539678970) passed at `b2173ff`, including the required canonical five-stage Vinext build and the informational oj 0.1.11 probe.
+- Component Model [run 33541570203](https://github.com/CrioNIK/Web-resume/actions/runs/33541570203) passed at `d5b4ccb`, including Rust and Go component builds, `wac` composition, Jco browser execution, and artifact upload.
+- Commit `d5b4ccb` fixes oj compatibility with explicit `?worker` entries and an explicit WASM URL. A clean Linux container emitted root, EN, UK, three worker assets, a valid 47,019-byte WASM asset, and 33 files totaling 5,284,467 bytes. [Frontier run 33541570230](https://github.com/CrioNIK/Web-resume/actions/runs/33541570230) then passed the canonical Vite build, oj build, enhanced worker/WASM verifier, summary, and artifact upload.
+- Browser smoke checks completed for Rust/WASM Forge, worker analytics, Component Mesh, and both read-only WebMCP tools.
+- The production Lighthouse run at `2026-09-01T17:55:29.970Z` scored Performance 98, Accessibility 100, Best Practices 100, SEO 100, and Agentic Browsing 100, with FCP 1.4 s, LCP 1.5 s, Speed Index 3.9 s, Total Blocking Time 0 ms, and CLS 0.
 
 ### Explicit boundaries
 
-- The new oj 0.1.11 parity workflow is unverified until its first CI execution succeeds; Vite remains canonical regardless of the research result.
-- Vinext-on-oj is an informational compatibility probe allowed to fail, not a supported production stack.
+- The oj 0.1.11 build is verified locally and by its first passing remote Frontier run. Repeated parity remains required for promotion, and Vite remains canonical.
+- Vinext-on-oj passed its informational CI probe, but remains research rather than a supported production stack or a Node-free runtime claim.
 - The production spatial path uses accessible DOM over GPU/Canvas. HTML-in-Canvas itself remains experimental.
 - WebContainers remain disabled in production until commercial licensing, HTTPS, cross-origin isolation, and shared-memory requirements are deliberately satisfied.
 - Deno's one-file deliverable is a loopback local-server launcher. The native Desktop/WebView distribution is a separate directory-based package.

@@ -16,17 +16,19 @@ The script measures JavaScript and CSS below `dist/assets/`. The checked-in Rust
 
 ## v3 canonical build snapshot
 
-The 2026-09-01 local Vite 8.2.2 release candidate passed the configured budgets:
+The 2026-09-01 Vite 8.2.2 release-code build passed locally and in canonical [CI run 33541570215](https://github.com/CrioNIK/Web-resume/actions/runs/33541570215):
 
 | Asset boundary | Raw | Gzip | Delivery behavior |
 | --- | ---: | ---: | --- |
-| Main JavaScript chunk | 219.61 KiB | 69.90 KiB | Initial application shell |
+| Main JavaScript chunk | 214.65 KiB | 67.63 KiB | Initial application shell |
 | All JavaScript chunks | — | 118.4 KiB | Includes all lazy chunks; 175 KiB budget |
-| CSS | 31.79 KiB | 7.38 KiB | Initial stylesheet |
+| CSS | 31.31 KiB | 7.28 KiB | Initial stylesheet |
 | Core Rust/WASM | 47.01 KiB | 19.55 KiB | Requested by the relevant worker experiment |
 | ES Module Shims TypeScript transformer | 4,768,287 bytes | Not budgeted | Separate vendor file requested only after Browser TypeScript intent |
 
 The transformer size is intentionally conspicuous. ES Module Shims 2.8.4 embeds Amaro 0.5.3 and TypeScript 5.8 grammar for browser-side type stripping. That runtime does not type-check, does not belong in the initial shell, and is not included in the `dist/assets/` JavaScript budget. Project tests use Amaro 1.1.11 separately.
+
+The alternate oj 0.1.11 build is compatibility evidence rather than the budget authority. After the `d5b4ccb` explicit worker/WASM entry fix, a clean Linux container emitted 33 files totaling 5,284,467 bytes, including all three documents, three workers, and a validated 47,019-byte WASM asset. [Frontier run 33541570230](https://github.com/CrioNIK/Web-resume/actions/runs/33541570230) then passed the Vite build, oj build, enhanced worker/WASM verification, summary, and artifact upload. This first remote pass does not change the budgets: Vite continues to define production output, and repeated parity is required before promotion.
 
 ## Intent-loading contract
 
@@ -59,11 +61,24 @@ These are measurable targets, not hard-coded claims:
 - API diagnostics display both client-observed round-trip and server-side preparation time because they measure different boundaries.
 - Browser AI download, prompt streaming, cancellation, and fallback state are visible; none is reported as zero-cost local inference.
 
-## Historical Lighthouse baseline
+## Production Lighthouse baseline
 
-Horizon Lab v2 scored 100 in Lighthouse 13.4.1 for Performance, Accessibility, Best Practices, and SEO against its local production build under the default simulated mobile profile. FCP was 1.2 s, LCP 1.5 s, Speed Index 1.2 s, Total Blocking Time 0 ms, and CLS 0.
+The deployed v3 site was measured at `2026-09-01T17:55:29.970Z`:
 
-That result is retained as historical evidence only. It predates the v3 shell and does **not** establish a v3 Lighthouse score. A new production run must be recorded after the v3 deployment; Lighthouse simulation remains lab data rather than field Core Web Vitals.
+| Category or metric | Production result |
+| --- | ---: |
+| Performance | 98 |
+| Accessibility | 100 |
+| Best Practices | 100 |
+| SEO | 100 |
+| Agentic Browsing | 100 |
+| First Contentful Paint | 1.4 s |
+| Largest Contentful Paint | 1.5 s |
+| Speed Index | 3.9 s |
+| Total Blocking Time | 0 ms |
+| Cumulative Layout Shift | 0 |
+
+This is production-URL lab evidence, not field Core Web Vitals. It records the tested deployment and simulated profile at one point in time; INP and population percentiles require real-user field data. The earlier v2 local baseline was 100/100/100/100 with FCP 1.2 s, LCP 1.5 s, Speed Index 1.2 s, TBT 0 ms, and CLS 0, and remains historical rather than directly comparable release telemetry.
 
 ## How to verify v3
 
@@ -77,7 +92,7 @@ That result is retained as historical evidence only. It predates the v3 shell an
 8. Test `/api/pulse` with cold and warm function observations; do not compare server preparation time to round-trip as if they were equivalent.
 9. Run and clear Local Vault; confirm its IndexedDB database appears only after interaction and is deleted by the clear action.
 10. Confirm the WebContainer module remains gated on the hosted release unless licensing and isolation were deliberately enabled.
-11. Run mobile Lighthouse and desktop interaction coverage against the final production URL, not only local preview.
+11. Repeat mobile Lighthouse and desktop interaction coverage against the production URL after material releases; compare environments before comparing scores.
 12. Record browser version, viewport, throttling, capability state, and deployment commit with every published metric.
 
 ## Caching

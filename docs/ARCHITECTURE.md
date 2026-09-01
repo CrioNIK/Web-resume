@@ -54,8 +54,8 @@ The hosted Vercel build is the product. The oj, Vinext, Component Model, and Den
 | Documents | Three Vite inputs | Root locale redirect plus independently indexed English and Ukrainian documents |
 | Client shell | React 19.2.8 | Navigation, project evidence, progress, frontier matrix, localization, and module orchestration |
 | Canonical builder | Vite 8.2.2 / Rolldown / Oxc | Production transformation, workers, lazy chunks, and content-hashed assets |
-| Builder research | `oj` 0.1.11 | Pinned Linux parity output; unverified until CI succeeds repeatedly; never the canonical release by implication |
-| Framework research | Vinext 1.0.0-beta.8 | Separate fixture built by the canonical Vinext CLI; the oj attempt is informational and may fail |
+| Builder research | `oj` 0.1.11 | Clean Linux output and Frontier 33541570230 pass with explicit worker/WASM entries; repeated parity is required before promotion |
+| Framework research | Vinext 1.0.0-beta.8 | Separate fixture whose canonical Vinext and informational oj builds both passed CI; still not the portfolio runtime |
 | Hero renderer | WebGPU / WGSL | Browser-owned procedural atmosphere with Canvas and reduced-motion fallbacks |
 | Neural renderer | WebGPU compute + render | Fixed 4→8→4 MLP inference, first-result reference validation, and instanced drawing |
 | Visual accessibility | Semantic DOM over `aria-hidden` GPU/Canvas | Keyboard, focus, text, and assistive-technology ownership stay in HTML; HTML-in-Canvas remains separately detected research |
@@ -78,23 +78,29 @@ The hosted Vercel build is the product. The oj, Vinext, Component Model, and Den
 
 ### oj parity path
 
-`npm run build:oj` targets `dist-oj/`; `npm run verify:oj` checks root, EN, UK, referenced assets, and a WASM artifact. The Linux workflow pins Rust 1.98 and `oj` 0.1.11, builds Vite first, and then attempts parity. This lane was newly added in v3 and remains **unverified until CI runs successfully**. A workflow definition is evidence of intent, not evidence of a passing build.
+`npm run build:oj` targets `dist-oj/`; `npm run verify:oj` checks root, EN, UK, referenced assets, all three worker entries, and the WebAssembly magic header. Commit `d5b4ccb` makes worker and WASM discovery explicit: each module-worker entry is imported with `?worker`, and the core binary is provided through an explicit URL entry instead of relying on Vite-specific inference.
+
+A clean Linux Docker build now emits all three documents, three worker assets, a valid 47,019-byte WASM asset, and 33 files totaling 5,284,467 bytes. [Frontier run 33541570230](https://github.com/CrioNIK/Web-resume/actions/runs/33541570230) at `d5b4ccb` independently passed the canonical Vite build, oj build, enhanced worker/WASM verifier, summary, and artifact upload. This is the first verified remote parity run; repeatability is still a promotion requirement, and Vite remains the canonical release builder.
 
 oj's Rust/Oxc/Rolldown core does not make every compatible Vite configuration universally Node-free: plugin hosting and server-side runtime paths may still require Node. The parity lane measures this repository's output; it does not generalize a toolchain-wide claim.
 
 ### Vinext compatibility path
 
-Vinext does not power the portfolio. `experiments/vinext-oj/` is a deliberately isolated 1.0.0-beta.8 fixture. Its local 4/4 compatibility check, TypeScript validation, canonical five-stage Node/Vinext build, production-server RSC response, and dependency audit pass. Installing oj and building the same fixture through oj remain informational, `continue-on-error` observations. Even a successful oj build would not prove a Node-free Vinext runtime. No result from that probe should be generalized into framework support or production readiness.
+Vinext does not power the portfolio. `experiments/vinext-oj/` is a deliberately isolated 1.0.0-beta.8 fixture. Its local 4/4 compatibility check, TypeScript validation, canonical five-stage Node/Vinext build, production-server RSC response, and dependency audit pass. [CI run 33539678970](https://github.com/CrioNIK/Web-resume/actions/runs/33539678970) at `b2173ff` also passed both the required canonical build and the informational oj probe. That result proves the pinned fixture, not a Node-free Vinext runtime or support for the portfolio's routes, workers, and deployment contract.
 
 ### Component Model path
 
-`components/wit/horizon.wit` defines checksum and normalization interfaces. Go supplies a pure checksum capability; Rust imports it and exports normalized signal data. Local tooling validated both component binaries and the `wac plug` composition, including removal of the private checksum import from the public component. The dedicated CI lane uses Jco 1.32.1 to transpile that result to browser ESM and smoke-test the generated binding; that Jco path has not been claimed as locally verified. The public lab uses a one-shot worker, the existing core Rust/WASM engine, and a TypeScript reference to exercise the same contract without pretending that browsers natively host Component Model binaries.
+`components/wit/horizon.wit` defines checksum and normalization interfaces. Go supplies a pure checksum capability; Rust imports it and exports normalized signal data. Local tooling validated both component binaries and the `wac plug` composition, including removal of the private checksum import from the public component. [Component Model run 33541570203](https://github.com/CrioNIK/Web-resume/actions/runs/33541570203) at release-code commit `d5b4ccb` rebuilt Rust and Go, composed them, transpiled the result with Jco 1.32.1, executed the generated browser binding, and uploaded the evidence artifact. The public lab still uses a one-shot worker, the existing core Rust/WASM engine, and a TypeScript reference; it does not pretend that browsers natively host Component Model binaries.
 
 The application functions perform no I/O, but the upstream Rust and Go WASIp2 runtimes still leave ambient WASI Preview 2 imports in generated components. Jco's pinned Preview 2 shim satisfies them. The architecture therefore claims a pure call path, not an empty WASI import surface.
 
 ### Deno release path
 
-The canonical Vite output is embedded into Deno artifacts after it is built. The one-file Windows artifact is a loopback local-server launcher. Deno Desktop produces a separate native WebView application package. Neither includes the hosted Go `/api/pulse` function. See [Deno local and desktop artifacts](DESKTOP.md).
+The canonical Vite output is embedded into Deno artifacts after it is built. The one-file Windows artifact is a loopback local-server launcher. [Desktop run 33541570191](https://github.com/CrioNIK/Web-resume/actions/runs/33541570191) at release-code commit `d5b4ccb` built that executable, smoke-tested it from a clean directory, and published its checksum. The separate native WebView job was intentionally skipped in that run; a skipped optional package is not a failed one-file release. Neither distribution includes the hosted Go `/api/pulse` function. See [Deno local and desktop artifacts](DESKTOP.md).
+
+### Canonical release evidence
+
+[CI run 33541570215](https://github.com/CrioNIK/Web-resume/actions/runs/33541570215) passed at release-code commit `d5b4ccb`, covering the canonical Node/Vite, TypeScript, Vitest, Go, Rust, and reproducible WASM gates. Frontier run 33541570230 also passed, but remains a compatibility lane independent of the canonical Vite release.
 
 ## Horizon Deck loading model
 

@@ -10,7 +10,7 @@ Horizon Lab is an English-first, fully Ukrainian-localized portfolio built as a 
 
 Version 3 extends the Vite/React rebuild from v2 into a twelve-module runtime lab and a ten-target frontier matrix:
 
-- **Vite 8.2.2 + React 19.2.8 remain the canonical production path.** The Rust-native `oj` 0.1.11 builder has a pinned Linux parity workflow, but that lane is unverified until its first CI run passes repeatedly and does not imply a universally Node-free Vite/plugin stack.
+- **Vite 8.2.2 + React 19.2.8 remain the canonical production path.** The Rust-native `oj` 0.1.11 compatibility build now passes in both a clean Linux container and [Frontier run 33541570230](https://github.com/CrioNIK/Web-resume/actions/runs/33541570230) at `d5b4ccb` after explicit worker entries and an explicit WASM URL were added. This first remote pass does not imply a universally Node-free Vite/plugin stack or automatically replace Vite.
 - **Twelve intent-gated lab modules** cover Go, Rust/WASM, data science, local AI, Canvas, IndexedDB, browser TypeScript, WebMCP, accessible spatial DOM, WebGPU neural compute, WebContainers, and the Wasm Component Model.
 - **Browser TypeScript** uses self-hosted ES Module Shims 2.8.4. Its embedded Amaro 0.5.3 transformer is a deferred 4,768,287-byte asset; it strips types but does not type-check. Project validation separately uses Amaro 1.1.11.
 - **Two draft WebMCP tools** expose the same public project and progress data shown on the page. Both are read-only, accept no input properties, and are registered only when `document.modelContext` exists.
@@ -27,14 +27,14 @@ No screen claims literal zero latency. The interface reports real device and net
 
 | Target | Repository status | Honest boundary |
 | --- | --- | --- |
-| `oj` 0.1.11 | Linux parity workflow | Vite is canonical; the new lane is unverified until CI proves repeatable output |
-| Vinext 1.0.0-beta.8 | Isolated compatibility fixture | Canonical Node/Vinext build is required; Vinext-on-oj is informational and may fail |
+| `oj` 0.1.11 | Verified Linux parity build | Root/EN/UK, three workers, and valid WASM pass locally and in Frontier 33541570230; repeated parity is required before promotion |
+| Vinext 1.0.0-beta.8 | Verified isolated probe | Both canonical Vinext and informational oj builds passed CI; this remains research, not the portfolio runtime |
 | Browser TypeScript | Live, intent-gated | Strip-only ES Module Shims runtime; the 4.8 MB transformer is never an initial-route cost |
 | WebMCP | Live where supported | Two read-only draft tools; no polyfill, mutation, secrets, or private data |
 | HTML-in-Canvas | Accessible production analogue | Real DOM overlay ships; the proposal API remains capability-detected research |
 | WebContainers | Implemented, gated | Requires explicit licensing, HTTPS, cross-origin isolation, and shared memory |
-| Deno Desktop | Build proof | One-file local server and native Desktop package remain separate artifacts |
-| Wasm Components | Multi-language build proof | WIT/Rust/Go composition is locally validated; Jco browser ESM remains CI evidence, not native execution |
+| Deno Desktop | Verified release build | Release CI built, smoke-tested, and checksummed the one-file server; the separate WebView job was intentionally skipped |
+| Wasm Components | Verified multi-language build | Release CI built Rust/Go, composed them, executed Jco browser output, and uploaded the artifact; browsers still do not execute components natively |
 | Browser AI | Progressive enhancement | Browser-owned model when available; deterministic local planner otherwise |
 | WebGPU Neural | Live | Real compute/render pipeline with JavaScript/Canvas reference fallback |
 
@@ -84,10 +84,10 @@ Browser
 └── optional runtime  browser AI, ESMS TypeScript, or gated WebContainer
 
 Release and research lanes
-├── oj 0.1.11         unverified Linux parity workflow; Vite stays canonical
-├── Vinext beta       isolated compatibility fixture; never the portfolio runtime
-├── Deno 2.9.5        one-file local server + separate native Desktop package
-└── Wasm components   WIT/Rust/Go build-time evidence + browser host fallback
+├── oj 0.1.11         clean Linux + first remote parity pass; Vite stays canonical
+├── Vinext beta       canonical + informational oj CI proof; research only
+├── Deno 2.9.5        verified one-file server; WebView package remains separate
+└── Wasm components   verified Rust/Go/Jco build; browser lab keeps honest fallback
 ```
 
 See [Architecture](docs/ARCHITECTURE.md), [frontier runtime boundaries](docs/FRONTIER_RUNTIME.md), [performance budgets](docs/PERFORMANCE.md), the [measured quality report](docs/QUALITY_REPORT.md), [desktop distribution](docs/DESKTOP.md), [content/localization guide](docs/CONTENT_GUIDE.md), and the [Go API contract](docs/GO_API.md).
@@ -128,16 +128,18 @@ npm run test:go     # Go tests when a Go toolchain is installed
 cargo test --manifest-path crates/horizon-engine/Cargo.toml
 ```
 
-The current local v3 candidate passes 10 Vitest files and 32 tests. Its measured canonical build is documented in [Performance](docs/PERFORMANCE.md) and [Quality report](docs/QUALITY_REPORT.md).
+The v3 release passes 10 Vitest files and 32 tests locally and in canonical CI. The production Lighthouse run recorded Performance 98, Accessibility 100, Best Practices 100, SEO 100, and Agentic Browsing 100. Exact build and browser evidence is documented in [Performance](docs/PERFORMANCE.md) and [Quality report](docs/QUALITY_REPORT.md).
 
 Additional evidence lanes:
 
 ```bash
 npm run build:oj    # experimental oj output; requires oj 0.1.11
-npm run verify:oj   # verifies routes, referenced assets, and a WASM artifact
+npm run verify:oj   # verifies routes, referenced assets, 3 workers, and valid WASM
 ```
 
-The `frontier.yml` workflow runs the canonical Vite build and a pinned Linux oj parity build. The oj result must not be described as verified until CI completes successfully and repeatably. The separate Vinext 1.0.0-beta.8 fixture passes its local compatibility check, TypeScript build, canonical five-stage build, and production-server smoke response; `vinext-probe.yml` records those required checks before attempting oj as informational. Neither fixture nor workflow changes the production framework.
+The `frontier.yml` workflow runs the canonical Vite build and the pinned oj compatibility build. Commit `d5b4ccb` fixes oj's worker/WASM discovery with explicit `?worker` entries and an explicit WASM URL. A clean Linux container emitted root, EN, UK, three workers, a valid 47,019-byte WASM asset, and 33 files totaling 5,284,467 bytes. [Frontier run 33541570230](https://github.com/CrioNIK/Web-resume/actions/runs/33541570230) then passed the Vite build, oj build, enhanced worker/WASM verifier, summary, and artifact upload. The separate Vinext 1.0.0-beta.8 workflow passed both its required canonical build and informational oj probe in [run 33539678970](https://github.com/CrioNIK/Web-resume/actions/runs/33539678970). These are compatibility proofs; repeated parity is required before any builder promotion, and Vite remains canonical.
+
+Release-code commit `d5b4ccb` passed canonical [CI run 33541570215](https://github.com/CrioNIK/Web-resume/actions/runs/33541570215), [Desktop run 33541570191](https://github.com/CrioNIK/Web-resume/actions/runs/33541570191), and [Component Model run 33541570203](https://github.com/CrioNIK/Web-resume/actions/runs/33541570203). The latter includes the full Rust/Go composition, Jco browser execution, and artifact upload.
 
 ## Rebuild the Rust/WASM package
 
@@ -151,9 +153,10 @@ Generated bindings live in `src/generated/horizon-engine/` so Vercel does not ne
 ## Performance and privacy
 
 - Initial production budget: largest JS chunk ≤ 90 KiB gzip, all JS ≤ 175 KiB gzip, CSS ≤ 45 KiB gzip.
-- The current canonical build contains 118.4 KiB of JavaScript gzip in total; the 219.61 KiB raw main chunk is 69.90 KiB gzip. CSS is 31.79 KiB raw / 7.38 KiB gzip.
+- The current canonical build contains 118.4 KiB of JavaScript gzip in total; the 214.65 KiB raw main chunk is 67.63 KiB gzip. CSS is 31.31 KiB raw / 7.28 KiB gzip.
 - The core Rust/WASM asset is 47.01 KiB raw / 19.55 KiB gzip and remains interaction-gated.
 - The 4,768,287-byte browser TypeScript transformer is a separately deferred vendor asset and is not hidden inside the initial JavaScript budget.
+- The 2026-09-01 production Lighthouse run measured FCP 1.4 s, LCP 1.5 s, Speed Index 3.9 s, Total Blocking Time 0 ms, and CLS 0; these remain simulated lab metrics, not field Core Web Vitals.
 - Device pixel ratio is capped; animation freezes under `prefers-reduced-motion`.
 - `/api/pulse` is GET/HEAD only, `no-store`, has no application persistence, and derives no visitor signal.
 - No analytics vendor, cookies, fingerprinting, visitor database, or AI proxy is included. Local Vault stores only synthetic records in the visitor's own IndexedDB and exposes a clear action.
