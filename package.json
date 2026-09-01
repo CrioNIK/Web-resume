@@ -10,7 +10,7 @@
     "dev": "vite --host 127.0.0.1",
     "dev:api": "go run ./cmd/pulse-dev",
     "build": "vite build && node scripts/check-bundle.mjs",
-    "build:wasm": "wasm-pack build crates/horizon-engine --target web --release --out-dir ../../src/generated/horizon-engine",
+    "build:wasm": "node scripts/build-wasm.mjs",
     "check": "tsc -b --pretty false",
     "test": "vitest run",
     "test:watch": "vitest",

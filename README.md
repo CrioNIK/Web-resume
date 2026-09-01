@@ -92,7 +92,7 @@ rustup target add wasm32-unknown-unknown
 npm run build:wasm
 ```
 
-Generated bindings live in `src/generated/horizon-engine/` so Vercel does not need a Rust toolchain during the frontend build. Vite follows the generated `new URL(..., import.meta.url)` reference, emits a content-hashed WASM asset, and keeps compute off the main thread. The source of truth is `crates/horizon-engine/`; generated files must change only as a consequence of that crate or the pinned toolchain workflow.
+Generated bindings live in `src/generated/horizon-engine/` so Vercel does not need a Rust toolchain during the frontend build. Vite follows the generated `new URL(..., import.meta.url)` reference, emits a content-hashed WASM asset, and keeps compute off the main thread. The build script remaps machine-specific Cargo paths before compilation so CI can verify the checked-in binary byte-for-byte. The source of truth is `crates/horizon-engine/`; generated files must change only as a consequence of that crate or the pinned toolchain workflow.
 
 ## Performance and privacy
 

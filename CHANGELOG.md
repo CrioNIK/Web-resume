@@ -16,6 +16,7 @@
 - WebGPU procedural hero with Canvas 2D and reduced-motion fallbacks.
 - Lazy Runtime Pulse, WASM Forge, Signal Science, Local AI, and Signal Run modules.
 - One-shot compute workers for Rust/WASM and the bounded JavaScript fallback, plus module-worker OLS analytics, browser-native AI capability bridge, and canvas mini-game.
+- Reproducible WASM path remapping so checked-in binaries remain byte-identical across different Cargo homes.
 - Strict TypeScript, Vitest, Rust and Go tests, bundle budgets, Node 24 CI actions, verified tool downloads, Dependabot, CSP, sitemap, hreflang, and operating documentation.
 
 ### Removed

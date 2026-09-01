@@ -53,6 +53,5 @@ jobs:
           echo "c09f971ecaed9a2efc80fdcea7a00ef6b53c7fadc8c57d1f61b53a6aa66b668a  /tmp/wasm-pack.tar.gz" | sha256sum -c -
           tar -xzf /tmp/wasm-pack.tar.gz -C /tmp
           sudo install /tmp/wasm-pack-v0.15.0-x86_64-unknown-linux-musl/wasm-pack /usr/local/bin/wasm-pack
-      - run: wasm-pack build crates/horizon-engine --target web --release --out-dir ../../src/generated/horizon-engine
-      - run: rm -f src/generated/horizon-engine/.gitignore
+      - run: npm run build:wasm
       - run: git diff --exit-code -- crates/horizon-engine/Cargo.lock src/generated/horizon-engine
