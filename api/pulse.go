@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/CrioNIK/Web-resume/internal/pulse"
+	"github.com/CrioNIK/Web-resume/pulse"
 )
 
 var pulseHandler = pulse.NewHandler()

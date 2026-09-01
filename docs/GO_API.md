@@ -1,6 +1,6 @@
 # Go pulse API
 
-`GET /api/pulse` is a small, stateless Vercel Go Function for the portfolio's live system panel. The root entry point is `api/pulse.go`, where Vercel discovers the exported `Handler(http.ResponseWriter, *http.Request)`. The implementation and tests live in `internal/pulse`.
+`GET /api/pulse` is a small, stateless Vercel Go Function for the portfolio's live system panel. The root entry point is `api/pulse.go`, where Vercel discovers the exported `Handler(http.ResponseWriter, *http.Request)`. The reusable implementation and tests live in `pulse/`; it is a public package because Vercel's beta runtime compiles the exported handler through an external bridge module, which cannot legally import a Go `internal` package.
 
 ## Contract
 
@@ -72,7 +72,7 @@ The module intentionally uses only the Go standard library. Vercel reads the roo
 Run with a local Go toolchain or in CI:
 
 ```sh
-gofmt -w api cmd internal
+gofmt -w api cmd pulse
 go vet ./...
 go test ./...
 go test -race ./...

@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/CrioNIK/Web-resume/internal/pulse"
+	"github.com/CrioNIK/Web-resume/pulse"
 )
 
 func main() {

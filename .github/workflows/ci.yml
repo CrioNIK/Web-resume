@@ -28,8 +28,8 @@ jobs:
         with:
           go-version: 1.26.7
           cache: true
-      - run: gofmt -w api cmd internal
-      - run: git diff --exit-code -- api cmd internal
+      - run: gofmt -w api cmd pulse
+      - run: git diff --exit-code -- api cmd pulse
       - run: go vet ./...
       - run: go test -race ./...
 
