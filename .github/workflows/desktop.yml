@@ -130,13 +130,13 @@ jobs:
             if ($english.StatusCode -ne 200 -or $english.Content -notmatch "Product Engineer") {
               throw "English build smoke test failed."
             }
-            if ($ukrainian.StatusCode -ne 200 -or $ukrainian.Content -notmatch "lang=\"uk\"") {
+            if ($ukrainian.StatusCode -ne 200 -or $ukrainian.Content -notmatch 'lang="uk"') {
               throw "Ukrainian build smoke test failed."
             }
-            if ($ukrainianNoSlash.StatusCode -ne 200 -or $ukrainianNoSlash.Content -notmatch "lang=\"uk\"") {
+            if ($ukrainianNoSlash.StatusCode -ne 200 -or $ukrainianNoSlash.Content -notmatch 'lang="uk"') {
               throw "Locale route without a trailing slash failed."
             }
-            if ($spaRoute.StatusCode -ne 200 -or $spaRoute.Content -notmatch "lang=\"en\"") {
+            if ($spaRoute.StatusCode -ne 200 -or $spaRoute.Content -notmatch 'lang="en"') {
               throw "Localized SPA fallback smoke test failed."
             }
 
