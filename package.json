@@ -1,26 +1,35 @@
 {
-  "name": "web-resume",
+  "name": "criomant-horizon-lab",
+  "private": true,
+  "version": "2.0.0",
   "type": "module",
-  "version": "0.0.1",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "vite --host 127.0.0.1",
+    "dev:api": "go run ./cmd/pulse-dev",
+    "build": "vite build && node scripts/check-bundle.mjs",
+    "build:wasm": "wasm-pack build crates/horizon-engine --target web --release --out-dir ../../src/generated/horizon-engine",
+    "check": "tsc -b --pretty false",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:go": "go test ./...",
+    "validate": "npm run check && npm run test && npm run build",
+    "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.14",
-    "@astrojs/react": "^4.4.2",
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.5.0",
-    "@tailwindcss/vite": "^4.2.1",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "astro": "^5.17.1",
-    "framer-motion": "^12.35.1",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "tailwindcss": "^4.2.1",
-    "three": "^0.183.2"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.13",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@webgpu/types": "^0.1.69",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   }
 }

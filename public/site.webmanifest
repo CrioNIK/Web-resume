@@ -1,0 +1,17 @@
+{
+  "name": "CrioMant — Horizon Lab",
+  "short_name": "Horizon Lab",
+  "start_url": "/en/",
+  "display": "standalone",
+  "background_color": "#07080b",
+  "theme_color": "#07080b",
+  "description": "Mykyta Baturin's bilingual product engineering and browser systems lab.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

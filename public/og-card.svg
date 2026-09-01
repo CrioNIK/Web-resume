@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#07080b"/>
+  <g stroke="#8e7dff" stroke-opacity=".17">
+    <path d="M0 90H1200M0 180H1200M0 270H1200M0 360H1200M0 450H1200M0 540H1200"/>
+    <path d="M90 0V630M180 0V630M270 0V630M360 0V630M450 0V630M540 0V630M630 0V630M720 0V630M810 0V630M900 0V630M990 0V630M1080 0V630"/>
+  </g>
+  <circle cx="1010" cy="150" r="115" fill="none" stroke="#52e6b8" stroke-width="3"/>
+  <circle cx="1010" cy="150" r="75" fill="none" stroke="#ff5c44" stroke-width="6"/>
+  <path d="M90 86H550" stroke="#ff5c44" stroke-width="7"/>
+  <text x="90" y="152" fill="#a2a6b0" font-family="monospace" font-size="20" letter-spacing="4">MYKYTA BATURIN / CRIOMANT</text>
+  <text x="82" y="335" fill="#f2f0e9" font-family="Arial, sans-serif" font-weight="900" font-size="112" letter-spacing="-7">HORIZON</text>
+  <text x="82" y="440" fill="#ff5c44" font-family="Arial, sans-serif" font-weight="900" font-size="112" letter-spacing="-7">LAB // V2</text>
+  <text x="90" y="522" fill="#a2a6b0" font-family="monospace" font-size="21">RUST/WASM · GO · WEBGPU · AI · DATA · EN/UK</text>
+  <rect x="90" y="558" width="1020" height="1" fill="#ffffff" opacity=".18"/>
+  <text x="90" y="595" fill="#52e6b8" font-family="monospace" font-size="15" letter-spacing="2">PRODUCT ENGINEER / SYSTEMS BUILDER / KYIV</text>
+</svg>

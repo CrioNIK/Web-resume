@@ -1,375 +1,113 @@
-# Web Resume - Mykyta Baturin
+# CrioMant — Horizon Lab
 
-Інтерактивне веб-резюме у форматі **cyberdeck / command hub**, де кожен розділ відкривається як окремий вузол:
-навички, досвід, проєкти, асети, контакти. Це вже не одна довга landing-сторінка, а multipage-інтерфейс з
-workbench-модулями, 3D-фоном, glitch-route transitions, audio-feedback і контентом на Astro collections.
+The live portfolio and browser-systems lab of **Mykyta Baturin / CrioMant**.
 
-## Зміст
+[Open the English experience](https://web-resume-murex.vercel.app/en/) · [Відкрити українську версію](https://web-resume-murex.vercel.app/uk/) · [GitHub profile](https://github.com/CrioNIK)
 
-- [1. Що це за проєкт](#1-що-це-за-проєкт)
-- [2. DND Codex Guide](#2-dnd-codex-guide)
-- [3. Архітектурна модель сайту](#3-архітектурна-модель-сайту)
-- [4. Що вже реалізовано](#4-що-вже-реалізовано)
-- [5. MDX і project docs](#5-mdx-і-project-docs)
-- [6. Стек](#6-стек)
-- [7. Структура проєкту](#7-структура-проєкту)
-- [8. Запуск локально](#8-запуск-локально)
-- [9. Як додати новий проєкт або case study](#9-як-додати-новий-проєкт-або-case-study)
-- [10. Інженерні trade-offs](#10-інженерні-trade-offs)
-- [11. Підсумок](#11-підсумок)
+Horizon Lab is not a static résumé. It is a small, measured product system built to make shipped work, public evidence, current progress, and technical range inspectable.
 
-## 1. Що це за проєкт
+## What changed in v2
 
-Це proof-of-work інтерфейс для frontend engineer, де важливо показати не тільки список технологій, а **спосіб
-мислення і спосіб збірки продукту**:
+The previous Astro portfolio was removed and used only as a content donor. Version 2 is a new implementation:
 
-- static-first каркас на Astro;
-- React islands лише в тих місцях, де потрібен runtime;
-- окремі multipage-маршрути під різні технічні вузли;
-- контентні колекції для коротких кейсів і окреме MDX-дерево для великих досьє;
-- окремий MDX-шар для багатших project docs;
-- єдина HUD-візуальна система з фоном, маршрутизаційними ефектами й аудіо-подіями.
+- **Vite 8 + React 19** for a small client shell and Rust-powered Rolldown builds.
+- **Rust 1.98 → WebAssembly** for deterministic particles, signal analysis, latency statistics, and timeline layout.
+- **Go 1.26.7** for a privacy-first Vercel pulse API.
+- **WebGPU** for the hero field when supported, with a Canvas 2D fallback and a reduced-motion static mode.
+- **Module Workers** for off-main-thread Rust/WASM compute, bounded JavaScript fallback, synthetic dataset generation, and regression.
+- **Experimental browser-native AI** when a local `LanguageModel` API exists, with an explicitly labelled deterministic fallback.
+- **English-first routing** with complete Ukrainian UI and content parity.
+- **Five lazy lab modules**: Go runtime pulse, Rust/WASM forge, data-science bench, local AI mapper, and a canvas mini-game.
 
-## 2. DND Codex Guide
+No screen claims literal zero latency. The UI measures real device and network timing, labels synthetic signals, and treats “instant” as a performance budget rather than mythology.
 
-`DND Codex Guide` тут подається як окремий розгорнутий live-case.
+## Public proof represented in the portfolio
 
-- це поточний **найповніше оформлений live-case**;
-- це кейс, де вже видно **React/Vite SSR основу**, **Astro pilot**, **MDX content pipeline** і **окремий backend API**;
-- це один із найкраще задокументованих технічних кейсів у поточній версії сайту.
+- 23 pull requests merged upstream into [Yoonmoonsik/bg3dnd](https://github.com/Yoonmoonsik/bg3dnd): 4 Ukrainian and 19 Polish.
+- 5,355 verified localization handles per locale.
+- Public evidence includes [PR #1305](https://github.com/Yoonmoonsik/bg3dnd/pull/1305), [#1310](https://github.com/Yoonmoonsik/bg3dnd/pull/1310), [#1324](https://github.com/Yoonmoonsik/bg3dnd/pull/1324), and [#1344](https://github.com/Yoonmoonsik/bg3dnd/pull/1344).
+- A live [TableTop BRAMA foundation](https://app-zeta-gules-57.vercel.app/) whose broader source remains private.
 
-Саме тому для нього тепер є не тільки запис у `projects`, а й окрема MDX-сторінка технічного досьє.
+Attribution boundary: `Yoonmoonsik/bg3dnd` belongs to and is maintained by Yoonmoonsik. CrioNIK / TableTop BRAMA contributed localization and QA; the portfolio does not claim ownership of the upstream project.
 
-## 3. Архітектурна модель сайту
-
-### 3.1 Command-hub routing
-
-```mermaid
-flowchart LR
-  A["/[lang]/"] --> B["Home Command Hub"]
-  B --> C["/[lang]/skills/"]
-  B --> D["/[lang]/experience/"]
-  B --> E["/[lang]/projects/"]
-  B --> F["/[lang]/about/"]
-  B --> G["/[lang]/assets/"]
-  B --> H["/[lang]/contacts/"]
-  E --> I["/[lang]/projects/[slug]/"]
-```
-
-### 3.2 Runtime split
-
-```mermaid
-flowchart TD
-  L["BaseLayout.astro"] --> S["Static shell + SEO + alternates"]
-  L --> V["HudBackdropScene (React)"]
-  L --> A["Audio runtime + route transitions"]
-  S --> P["Astro pages and panels"]
-  P --> W["ProjectsWorkbench / AssetsWorkbench"]
-  W --> D["Collection-driven project data"]
-  D --> M["MD or MDX entries"]
-```
-
-### 3.3 Контентний потік для проєктів
-
-```mermaid
-flowchart TD
-  A["src/content/projects/*.md"] --> B["Project cards + workbench detail panel"]
-  C["src/content/projectDocs/**.mdx"] --> D["/[lang]/projects/[slug]/"]
-  D --> E["Rendered MDX article + TOC + custom components"]
-  B --> F["Link to case study if caseStudySlug exists"]
-```
-
-## 4. Що вже реалізовано
-
-### 4.1 Multipage-подача замість однієї стрічки
-
-- `home` став навігаційним вузлом;
-- кожен розділ має окремий URL і власний banner/context;
-- `projects` та `assets` працюють як окремі workstation-модулі.
-
-### 4.2 HUD runtime
-
-Файл: `src/layouts/BaseLayout.astro`
-
-- 3D background scene як окремий React runtime;
-- route transition overlay для внутрішніх переходів;
-- збереження вибраної мови;
-- audio priming і звуки для `hover`, `confirm`, `route`, `panel-open`, `panel-close`.
-
-### 4.3 Projects Workstation
-
-Файли:
-
-- `src/components/react/ProjectsWorkbench.tsx`
-- `src/lib/projects.ts`
-- `src/content/projects/*.md`
-
-Можливості:
-
-- список проєктів з коротким досьє;
-- права detail-панель зі стеком, роллю, архітектурою й impact;
-- link-out на live;
-- link на окремий case-study route, якщо проєкт має `caseStudySlug`.
-
-### 4.4 Assets Workstation
-
-Окремий модуль для reusable UI/interaction напрацювань:
-
-- preview;
-- use-cases;
-- кодові фрагменти;
-- структуровані описи.
-
-### 4.5 Мультимовність
-
-- `uk` та `en`;
-- окремі маршрути на кожну мову;
-- language switch;
-- `alternate` links;
-- окремі локалізовані тексти в `siteCopy` та `pageCopy`.
-
-### 4.6 Візуальна система
-
-Файл: `src/styles/global.css`
-
-- кастомні локальні шрифти;
-- cyberpunk / HUD палітра;
-- scanlines / grain / vignette overlays;
-- glitch-анімації;
-- route wipe;
-- адаптивність і `prefers-reduced-motion`.
-
-## 5. MDX і project docs
-
-MDX тут доданий не для “блогу заради блогу”, а для **багатших технічних досьє**.
-
-Що це дає:
-
-- сторінки типу `/uk/projects/dnd-codex-guide/`;
-- таблиці, кодові блоки, callout-секції;
-- sticky TOC, який збирається з headings;
-- Astro-компоненти прямо всередині MDX.
-
-### 5.1 Що використовується
-
-- `@astrojs/mdx`
-- `import.meta.glob()` для локалізованих MDX case-study entry
-- dynamic route `src/pages/[lang]/projects/[slug].astro`
-- кастомні MDX-компоненти:
-  - `SignalCallout.astro`
-  - `MetricsGrid.astro`
-  - `FeatureTiles.astro`
-
-### 5.2 Навіщо це окремо від `projects/*.md`
-
-`projects/*.md` лишаються короткими структурованими профілями для workstation-карток.
-
-`projectDocs/**/*.mdx` використовуються для великих case studies, де потрібні:
-
-- багатий опис;
-- таблиці;
-- код;
-- секційна навігація;
-- більш “редакторський” формат.
-
-## 6. Стек
-
-### 6.1 Core
-
-- **Astro 5**
-- **React 19**
-- **TypeScript**
-- **Tailwind CSS v4**
-
-### 6.2 Motion / Runtime
-
-- **Framer Motion**
-- **Three.js**
-- **@react-three/fiber**
-- **@react-three/drei**
-
-### 6.3 Content
-
-- **Astro Content Collections**
-- **Zod schema**
-- **Markdown**
-- **MDX**
-
-### 6.4 UX mechanics
-
-- custom route transition runtime;
-- audio interaction bus;
-- sticky workbench panels;
-- content-driven page generation.
-
-## 7. Структура проєкту
+## Architecture
 
 ```text
-.
-|- public/
-|  |- fonts/
-|  |- sounds/
-|- src/
-|  |- components/
-|  |  |- astro/
-|  |  |  |- TopNav.astro
-|  |  |  |- PageBanner.astro
-|  |  |  |- HomeModules.astro
-|  |  |  |- project-docs/
-|  |  |     |- SignalCallout.astro
-|  |  |     |- MetricsGrid.astro
-|  |  |     |- FeatureTiles.astro
-|  |  |- react/
-|  |     |- HudBackdropScene.tsx
-|  |     |- ProjectsWorkbench.tsx
-|  |     |- AssetsWorkbench.tsx
-|  |- content/
-|  |  |- config.ts
-|  |  |- projects/
-|  |  |  |- dnd-codex-frontend.md
-|  |  |  |- dnd-codex-backend-api.md
-|  |  |  |- interactive-resume-lab.md
-|  |  |- projectDocs/
-|  |     |- uk/dnd-codex-guide.mdx
-|  |     |- en/dnd-codex-guide.mdx
-|  |- i18n/
-|  |  |- siteCopy.ts
-|  |  |- pageCopy.ts
-|  |- layouts/
-|  |  |- BaseLayout.astro
-|  |- lib/
-|  |  |- projects.ts
-|  |  |- projectDocs.ts
-|  |  |- routes.ts
-|  |- pages/
-|  |  |- [lang]/index.astro
-|  |  |- [lang]/[page].astro
-|  |  |- [lang]/projects/[slug].astro
-|  |- styles/
-|     |- global.css
-|     |- project-docs.css
-|- astro.config.mjs
-|- package.json
-|- README.md
+Vercel global CDN
+├── /en/ + /uk/       static Vite entry documents
+├── /assets/*         hashed React/CSS/worker/WASM chunks
+└── /api/pulse        stateless Go Vercel Function (fra1)
+
+Browser
+├── capability gate → WebGPU or Canvas 2D or static field
+├── lazy lab deck    → one module downloaded on selection
+├── analytics worker → deterministic OLS analytics
+├── compute worker   → hashed Rust/WASM or honest JS fallback
+└── optional AI      → browser LanguageModel or honest local ruleset
 ```
 
-## 8. Запуск локально
+See [Architecture](docs/ARCHITECTURE.md), [performance budgets](docs/PERFORMANCE.md), [content/localization guide](docs/CONTENT_GUIDE.md), and the [Go API contract](docs/GO_API.md).
 
-### 8.1 Вимоги
+## Local development
 
-- Node.js 20+
-- npm 10+
+Requirements:
 
-### 8.2 Команди
+- Node.js 24
+- npm 11+
+- Optional: Go 1.26.7 for the live pulse endpoint
+- Optional: Rust 1.98, the `wasm32-unknown-unknown` target, and wasm-pack 0.15 for rebuilding the checked-in WASM package
 
 ```bash
 npm install
 npm run dev
 ```
 
-Локально:
+The frontend runs at `http://127.0.0.1:4173/en/`. Without the optional Go process, the Runtime Pulse module shows its designed offline state while every other module remains functional.
 
-```text
-http://localhost:4321
-```
-
-Production build:
+Run the local API in a second terminal:
 
 ```bash
-npm run build
-npm run preview
+npm run dev:api
 ```
 
-## 9. Як додати новий проєкт або case study
+Vite proxies `/api/*` to `127.0.0.1:8787` in development.
 
-### 9.1 Короткий проєкт у workstation
+## Validation
 
-Створи файл у `src/content/projects/`.
-
-Поля:
-
-```yaml
-order: 4
-title:
-  uk: "Назва"
-  en: "Title"
-summary:
-  uk: "Короткий опис"
-  en: "Short summary"
-period:
-  uk: "2026"
-  en: "2026"
-url: "https://example.com"
-tags:
-  - "React"
-  - "TypeScript"
-highlight:
-  uk:
-    - "Пункт 1"
-    - "Пункт 2"
-  en:
-    - "Point 1"
-    - "Point 2"
-accent: "#ff4a61"
-caseStudySlug: "my-project"
+```bash
+npm run check       # strict TypeScript project references
+npm run test        # deterministic analytics and planner tests
+npm run build       # Vite production build + gzip bundle budgets
+npm run validate    # all frontend gates
+npm run test:go     # Go tests when a Go toolchain is installed
+cargo test --manifest-path crates/horizon-engine/Cargo.toml
 ```
 
-### 9.2 Розгорнуте досьє на MDX
+The CI workflow also runs `go vet`, race-enabled Go tests, Rust tests, a reproducible WASM build, and checks that generated browser artifacts are committed.
 
-Створи локалізовані файли:
+## Rebuild the Rust/WASM package
 
-- `src/content/projectDocs/uk/my-project.mdx`
-- `src/content/projectDocs/en/my-project.mdx`
-
-Мінімальний frontmatter:
-
-```yaml
-slug: "my-project"
-projectSlug: "slug-з-папки-projects"
-title: "Назва case study"
-summary: "Опис сторінки"
-eyebrow: "Case Study // XXX"
-node: "NODE // XXX"
-teaser: "Коротке позиціонування"
+```bash
+rustup target add wasm32-unknown-unknown
+npm run build:wasm
 ```
 
-Потім:
+Generated bindings live in `src/generated/horizon-engine/` so Vercel does not need a Rust toolchain during the frontend build. Vite follows the generated `new URL(..., import.meta.url)` reference, emits a content-hashed WASM asset, and keeps compute off the main thread. The source of truth is `crates/horizon-engine/`; generated files must change only as a consequence of that crate or the pinned toolchain workflow.
 
-1. додай `caseStudySlug` у відповідний `projects/*.md`;
-2. запусти `npm run build`;
-3. перевір маршрут `/uk/projects/my-project/` і `/en/projects/my-project/`.
+## Performance and privacy
 
-## 10. Інженерні trade-offs
+- Initial production budget: largest JS chunk ≤ 90 KiB gzip, all JS ≤ 175 KiB gzip, CSS ≤ 45 KiB gzip.
+- Lab modules are split and loaded on interaction.
+- Device pixel ratio is capped for the atmospheric renderer.
+- Animation freezes under `prefers-reduced-motion`.
+- `/api/pulse` is GET/HEAD only, `no-store`, has no application persistence, and derives no signal from the visitor.
+- No analytics vendor, cookies, fingerprinting, visitor database, or AI proxy is included.
+- A strict CSP, permissions policy, HSTS, no-sniff, and frame denial are configured in `vercel.json`.
 
-### 10.1 Чому не все на React
+## Deployment
 
-Бо частина сайту є контентною і виграє від Astro routing + нижчої вартості гідрації.
+The repository is linked to the existing Vercel project. A push to `master` triggers production deployment. `vercel.json` pins Vite as the framework, fixes the build/output contract, and places the Go function in Frankfurt. Frontend, worker, and WASM assets are content-hashed and immutable.
 
-### 10.2 Чому не все на MDX
+## Repository policy
 
-Бо workstation-картки краще живуть у короткій схемі frontmatter + typed profile, ніж у великих статтях.
-
-### 10.3 Чому не один gigantic README-кейс у межах картки
-
-Бо detail-panel і case-study page вирішують різні задачі:
-
-- panel = швидкий перегляд;
-- MDX page = глибоке технічне досьє.
-
-### 10.4 Чому DND Codex подається саме так
-
-Бо зараз це кейс, де видно не тільки UI, а й migration thinking:
-
-- React/Vite SSR продукт;
-- Astro knowledge routes;
-- MDX content pipeline;
-- окремий backend.
-
-## 11. Підсумок
-
-Це резюме показує не просто “що я знаю”, а **як я організовую систему**:
-
-- розділяю static/content і interactive/runtime шари;
-- не боюся multipage-архітектури там, де вона краща за single-scroll;
-- виношу довгі технічні кейси в MDX;
-- роблю інтерфейс виразним, але підпорядкованим структурі, а не навпаки.
+The repository currently declares no repository-wide license. Do not assume permission to reuse the implementation or brand assets beyond what applicable law allows. Public upstream work linked above retains its own ownership and licensing terms.

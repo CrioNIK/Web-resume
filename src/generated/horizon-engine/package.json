@@ -1,0 +1,16 @@
+{
+  "name": "horizon-engine",
+  "type": "module",
+  "description": "Deterministic browser compute primitives for the Horizon portfolio experience",
+  "version": "0.1.0",
+  "files": [
+    "horizon_engine_bg.wasm",
+    "horizon_engine.js",
+    "horizon_engine.d.ts"
+  ],
+  "main": "horizon_engine.js",
+  "types": "horizon_engine.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
