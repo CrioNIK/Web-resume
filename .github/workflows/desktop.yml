@@ -167,7 +167,7 @@ jobs:
             Set-Content -Encoding ascii "artifacts/HorizonLab-Local-Server-windows-x64.exe.sha256"
 
       - name: Upload single-file launcher
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: HorizonLab-Local-Server-windows-x64
           path: |
@@ -223,7 +223,7 @@ jobs:
             Set-Content -Encoding ascii "artifacts/HorizonLab-Desktop-webview-windows-x64.zip.sha256"
 
       - name: Upload experimental desktop package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: HorizonLab-Desktop-webview-windows-x64
           path: |
