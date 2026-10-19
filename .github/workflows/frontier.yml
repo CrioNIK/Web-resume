@@ -43,7 +43,7 @@ jobs:
           echo "### oj 0.1.11 parity" >> "$GITHUB_STEP_SUMMARY"
           echo "Build completed in ${OJ_BUILD_MS} ms." >> "$GITHUB_STEP_SUMMARY"
           echo "Verified root, EN, UK, referenced assets, three worker entrypoints, and a valid Wasm artifact." >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: oj-parity-${{ github.sha }}
           path: dist-oj

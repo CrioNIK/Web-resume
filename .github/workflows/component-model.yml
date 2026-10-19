@@ -161,7 +161,7 @@ jobs:
           preview2-shim ${PREVIEW2_SHIM_VERSION}
           EOF
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: horizon-component-mesh
           if-no-files-found: error
